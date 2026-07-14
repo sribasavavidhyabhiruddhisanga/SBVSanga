@@ -1,0 +1,45 @@
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Media" title="Gallery" />
+
+  <div class="mt-6 flex flex-wrap gap-2">
+    <button
+      *ngFor="let category of categories"
+      type="button"
+      (click)="setCategory(category)"
+      class="rounded-full px-4 py-2 text-sm font-medium transition"
+      [class.bg-orange-600]="activeCategory === category"
+      [class.text-white]="activeCategory === category"
+      [class.bg-white]="activeCategory !== category"
+      [class.text-stone-600]="activeCategory !== category"
+      [class.shadow-sm]="activeCategory !== category"
+      [class.hover:bg-orange-50]="activeCategory !== category"
+    >
+      {{ category }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div *ngFor="let row of [1, 2, 3, 4, 5, 6, 7, 8]" class="aspect-square animate-pulse rounded-3xl bg-stone-100"></div>
+  </div>
+
+  <div *ngIf="!loading" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div
+      *ngFor="let item of filteredItems"
+      class="group relative aspect-square overflow-hidden rounded-3xl shadow-lg shadow-stone-200/60"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br transition duration-300 group-hover:scale-110"
+        [ngClass]="[item.colorFrom, item.colorTo]"
+      ></div>
+      <div class="absolute inset-0 bg-black/10 transition duration-300 group-hover:bg-black/30"></div>
+      <div class="absolute inset-x-0 bottom-0 p-4">
+        <p class="text-sm font-semibold text-white">{{ item.title }}</p>
+        <p class="text-xs text-white/80">{{ item.date }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="filteredItems.length === 0" class="col-span-full py-16 text-center text-sm text-stone-400">
+      No gallery items in this category yet.
+    </div>
+  </div>
+</div>

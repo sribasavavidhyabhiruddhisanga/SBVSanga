@@ -1,0 +1,157 @@
+<div class="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10" *ngIf="authService.user as user">
+  <!-- Hero / welcome banner -->
+  <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-700 via-amber-700 to-stone-900 p-8 text-white shadow-xl sm:p-12">
+    <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-orange-400/20 blur-3xl"></div>
+
+    <div class="relative">
+      <p class="text-xs font-semibold uppercase tracking-[0.3em] text-amber-200">Welcome back</p>
+      <h2 class="mt-3 max-w-xl text-3xl font-bold leading-tight sm:text-4xl">
+        Hello, {{ user.username }}
+      </h2>
+      <p class="mt-4 max-w-xl text-sm text-orange-50 sm:text-base">
+        Here's a quick overview of your account. Use the links below to jump straight into members, scholarships or the gallery.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          routerLink="/members/member-list"
+          class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+        >
+          View Members
+        </a>
+        <a
+          routerLink="/scholar/scholarship-list"
+          class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+        >
+          Scholarships
+        </a>
+        <a
+          routerLink="/gallery"
+          class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+        >
+          Gallery
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overlapping profile stat strip -->
+  <section class="relative z-10 -mt-8 grid gap-6 rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 sm:grid-cols-3 sm:divide-x sm:divide-stone-100 sm:p-8">
+    <div class="flex items-center gap-4">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+          <path
+            d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5Z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Signed in as</p>
+        <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.username }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4 sm:pl-6">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+          <path
+            d="M3 6h18v12H3V6Zm0 0 9 7 9-7"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Email</p>
+        <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.emailId }}</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4 sm:pl-6">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+          <path
+            d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Signed in with</p>
+        <p class="mt-1 truncate text-lg font-bold text-stone-900">Google</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Account security / session details -->
+  <section class="mt-14">
+    <p class="text-center text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">Account Security</p>
+    <h3 class="mt-2 text-center text-2xl font-bold text-stone-900 sm:text-3xl">How your session is protected</h3>
+    <div class="mt-3 flex items-center justify-center gap-1.5">
+      <span class="h-1.5 w-1.5 rounded-full bg-orange-300"></span>
+      <span class="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
+      <span class="h-1.5 w-1.5 rounded-full bg-orange-700"></span>
+    </div>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      <div class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <path
+              d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <h4 class="mt-4 text-base font-semibold text-stone-900">Google Sign-In</h4>
+        <p class="mt-2 text-sm text-stone-500">
+          You authenticate securely through Google Identity Services — no password is ever stored by this app.
+        </p>
+      </div>
+
+      <div class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </div>
+        <h4 class="mt-4 text-base font-semibold text-stone-900">Protected Route</h4>
+        <p class="mt-2 text-sm text-stone-500">
+          This dashboard sits behind an auth guard, so only a signed-in user can ever reach this page.
+        </p>
+      </div>
+
+      <div class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <path
+              d="M4 6h16M4 12h16M4 18h7"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <h4 class="mt-4 text-base font-semibold text-stone-900">Local Session</h4>
+        <p class="mt-2 text-sm text-stone-500">
+          Your profile details stay in this browser's session and are cleared the moment you sign out.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>

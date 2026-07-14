@@ -1,0 +1,122 @@
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Scholar" title="Scholarship Apply" />
+
+  <form class="mt-6 rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 sm:p-8" (ngSubmit)="submitApplication()">
+    <div *ngIf="submitted" class="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+      Application submitted successfully. You can track its status under Scholar Applied.
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Applicant Name</label>
+        <input
+          type="text"
+          name="applicantName"
+          [(ngModel)]="form.applicantName"
+          required
+          placeholder="Full name"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Email</label>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="form.email"
+          required
+          placeholder="you@example.com"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Phone</label>
+        <input
+          type="tel"
+          name="phone"
+          [(ngModel)]="form.phone"
+          placeholder="+91 90000 00000"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Class / Course</label>
+        <input
+          type="text"
+          name="course"
+          [(ngModel)]="form.course"
+          placeholder="e.g. B.E. Computer Science"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Scholarship</label>
+        <select
+          name="scholarship"
+          [(ngModel)]="form.scholarship"
+          required
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        >
+          <option value="" disabled>Select a scholarship</option>
+          <option *ngFor="let option of scholarshipOptions" [value]="option">{{ option }}</option>
+        </select>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Amount Requested</label>
+        <div class="relative mt-1.5">
+          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">₹</span>
+          <input
+            type="number"
+            name="amountRequested"
+            [(ngModel)]="form.amountRequested"
+            min="1"
+            placeholder="10000"
+            class="w-full rounded-xl border border-stone-200 py-2.5 pl-7 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+          />
+        </div>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Supporting Document</label>
+        <div class="mt-1.5 flex items-center justify-center rounded-xl border-2 border-dashed border-stone-200 px-4 py-8 text-center transition hover:border-orange-300">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="mx-auto h-8 w-8 text-stone-400">
+              <path
+                d="M12 16V4m0 0 4 4m-4-4-4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p class="mt-2 text-sm text-stone-500">Drag and drop a file, or click to browse</p>
+            <input type="file" class="mt-3 block w-full text-xs text-stone-500" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="submitting"
+      class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+    >
+      <svg
+        *ngIf="submitting"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        class="h-4 w-4 animate-spin"
+      >
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+        <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+      {{ submitting ? 'Submitting...' : 'Submit Application' }}
+    </button>
+  </form>
+</div>

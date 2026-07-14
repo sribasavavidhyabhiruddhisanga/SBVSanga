@@ -1,0 +1,82 @@
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Scholar" title="Scholar Applied" />
+
+  <div class="mt-6 rounded-3xl bg-white p-4 shadow-lg shadow-stone-200/60 sm:p-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="relative w-full sm:max-w-xs">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
+        >
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+          <path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search by applicant or scholarship"
+          class="w-full rounded-xl border border-stone-200 py-2 pl-9 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <select
+        [(ngModel)]="statusFilter"
+        class="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100 sm:w-44"
+      >
+        <option value="All">All statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full min-w-[640px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-stone-100 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            <th class="py-3 pr-4">Applicant</th>
+            <th class="py-3 pr-4">Scholarship</th>
+            <th class="py-3 pr-4">Applied On</th>
+            <th class="py-3 pr-4">Status</th>
+          </tr>
+        </thead>
+
+        <tbody *ngIf="loading" class="animate-pulse divide-y divide-stone-50">
+          <tr *ngFor="let row of [1, 2, 3, 4, 5]">
+            <td class="py-4 pr-4"><div class="h-4 w-28 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-48 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-24 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-20 rounded bg-stone-100"></div></td>
+          </tr>
+        </tbody>
+
+        <tbody *ngIf="!loading" class="divide-y divide-stone-50">
+          <tr *ngFor="let application of filteredApplications" class="transition hover:bg-orange-50/40">
+            <td class="py-4 pr-4 font-semibold text-stone-900">{{ application.applicantName }}</td>
+            <td class="py-4 pr-4 text-stone-600">{{ application.scholarship }}</td>
+            <td class="py-4 pr-4 text-stone-600">{{ application.appliedOn }}</td>
+            <td class="py-4 pr-4">
+              <span
+                class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                [class.bg-amber-50]="application.status === 'Pending'"
+                [class.text-amber-700]="application.status === 'Pending'"
+                [class.bg-emerald-50]="application.status === 'Approved'"
+                [class.text-emerald-700]="application.status === 'Approved'"
+                [class.bg-red-50]="application.status === 'Rejected'"
+                [class.text-red-700]="application.status === 'Rejected'"
+              >
+                {{ application.status }}
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredApplications.length === 0">
+            <td colspan="4" class="py-10 text-center text-sm text-stone-400">No applications match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf .angular/cache dist)",
+      "Bash(npm run *)"
+    ]
+  }
+}

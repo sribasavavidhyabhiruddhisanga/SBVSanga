@@ -1,0 +1,78 @@
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Members" title="Donor List" />
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-3">
+    <div class="rounded-3xl bg-white p-5 shadow-lg shadow-stone-200/60">
+      <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Total Donors</p>
+      <p class="mt-2 text-2xl font-bold text-stone-900">{{ donors.length }}</p>
+    </div>
+    <div class="rounded-3xl bg-white p-5 shadow-lg shadow-stone-200/60">
+      <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Total Raised</p>
+      <p class="mt-2 text-2xl font-bold text-stone-900">{{ totalRaised | currency: 'INR' : 'symbol' : '1.0-0' }}</p>
+    </div>
+    <div class="rounded-3xl bg-white p-5 shadow-lg shadow-stone-200/60">
+      <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Average Donation</p>
+      <p class="mt-2 text-2xl font-bold text-stone-900">{{ averageDonation | currency: 'INR' : 'symbol' : '1.0-0' }}</p>
+    </div>
+  </div>
+
+  <div class="mt-6 rounded-3xl bg-white p-4 shadow-lg shadow-stone-200/60 sm:p-6">
+    <div class="relative w-full sm:max-w-xs">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
+      >
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+        <path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search donors"
+        class="w-full rounded-xl border border-stone-200 py-2 pl-9 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+      />
+    </div>
+
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full min-w-[640px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-stone-100 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            <th class="py-3 pr-4">Donor</th>
+            <th class="py-3 pr-4">Total Donated</th>
+            <th class="py-3 pr-4">Donations</th>
+            <th class="py-3 pr-4">Last Donation</th>
+          </tr>
+        </thead>
+
+        <tbody *ngIf="loading" class="animate-pulse divide-y divide-stone-50">
+          <tr *ngFor="let row of [1, 2, 3, 4]">
+            <td class="py-4 pr-4"><div class="h-4 w-32 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-20 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-16 rounded bg-stone-100"></div></td>
+            <td class="py-4 pr-4"><div class="h-4 w-24 rounded bg-stone-100"></div></td>
+          </tr>
+        </tbody>
+
+        <tbody *ngIf="!loading" class="divide-y divide-stone-50">
+          <tr *ngFor="let donor of filteredDonors" class="transition hover:bg-orange-50/40">
+            <td class="py-4 pr-4">
+              <p class="font-semibold text-stone-900">{{ donor.name }}</p>
+              <p class="text-xs text-stone-500">{{ donor.email }}</p>
+            </td>
+            <td class="py-4 pr-4 font-semibold text-stone-900">
+              {{ donor.totalDonated | currency: 'INR' : 'symbol' : '1.0-0' }}
+            </td>
+            <td class="py-4 pr-4 text-stone-600">{{ donor.donationsCount }}</td>
+            <td class="py-4 pr-4 text-stone-600">{{ donor.lastDonation }}</td>
+          </tr>
+
+          <tr *ngIf="filteredDonors.length === 0">
+            <td colspan="4" class="py-10 text-center text-sm text-stone-400">No donors match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
