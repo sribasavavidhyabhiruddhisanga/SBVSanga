@@ -1,0 +1,57 @@
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Updates" title="Upcoming Events" />
+
+  <div
+    class="mt-6 rounded-3xl border border-dashed border-orange-200 bg-orange-50/60 px-5 py-3 text-sm text-orange-700"
+  >
+    This page is a placeholder. Event details will appear here once they're scheduled.
+  </div>
+
+  <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div
+      *ngFor="let event of events"
+      class="group relative overflow-hidden rounded-3xl bg-white shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
+    >
+      <div class="relative h-36 overflow-hidden">
+        <div
+          class="absolute inset-0 bg-gradient-to-br transition duration-300 group-hover:scale-110"
+          [ngClass]="[event.colorFrom, event.colorTo]"
+        ></div>
+        <span
+          class="absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-stone-600 shadow-sm"
+        >
+          Coming soon
+        </span>
+      </div>
+
+      <div class="p-5">
+        <h4 class="text-base font-semibold text-stone-900">{{ event.title }}</h4>
+        <div class="mt-3 flex items-center gap-2 text-sm text-stone-500">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
+            <path
+              d="M8 2v3m8-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          {{ event.date }}
+        </div>
+        <div class="mt-1.5 flex items-center gap-2 text-sm text-stone-500">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
+            <path
+              d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+          {{ event.location }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

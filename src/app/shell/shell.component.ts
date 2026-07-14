@@ -1,22 +1,16 @@
-import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, HostListener, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../core/auth.service';
 
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
-type DesktopMenu = 'members' | 'scholar' | null;
+type DesktopMenu = 'community' | 'updates' | null;
+type MobileGroup = 'community' | 'updates';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './shell.component.html',
 })
 export class ShellComponent implements OnInit {
@@ -26,8 +20,8 @@ export class ShellComponent implements OnInit {
 
   userMenuOpen = false;
   mobileMenuOpen = false;
-  mobileMembersOpen = false;
-  mobileScholarOpen = false;
+  mobileCommunityOpen = false;
+  mobileUpdatesOpen = false;
   openDesktopMenu: DesktopMenu = null;
 
   constructor(
@@ -70,42 +64,32 @@ export class ShellComponent implements OnInit {
     this.mobileMenuOpen = false;
   }
 
-  toggleMobileGroup(group: 'members' | 'scholar'): void {
-    if (group === 'members') {
-      this.mobileMembersOpen = !this.mobileMembersOpen;
+  toggleMobileGroup(group: MobileGroup): void {
+    if (group === 'community') {
+      this.mobileCommunityOpen = !this.mobileCommunityOpen;
     } else {
-      this.mobileScholarOpen = !this.mobileScholarOpen;
+      this.mobileUpdatesOpen = !this.mobileUpdatesOpen;
     }
   }
 
-  isMembersActive(): boolean {
-    return this.router.url.startsWith('/members');
+  isCommunityActive(): boolean {
+    return this.router.url.startsWith('/community');
   }
 
-  isScholarActive(): boolean {
-    return this.router.url.startsWith('/scholar');
+  isUpdatesActive(): boolean {
+    return this.router.url.startsWith('/updates');
   }
 
   closeAllMenus(): void {
     this.userMenuOpen = false;
     this.openDesktopMenu = null;
     this.mobileMenuOpen = false;
-    this.mobileMembersOpen = false;
-    this.mobileScholarOpen = false;
+    this.mobileCommunityOpen = false;
+    this.mobileUpdatesOpen = false;
   }
 
   logout(): void {
-    const email = this.authService.user?.emailId;
-
-    if (window.google?.accounts?.id) {
-      window.google.accounts.id.disableAutoSelect();
-
-      if (email) {
-        window.google.accounts.id.revoke(email, () => {});
-      }
-    }
-
-    this.authService.clearUser();
+    this.authService.signOut();
     this.closeAllMenus();
     this.router.navigateByUrl('/login');
   }

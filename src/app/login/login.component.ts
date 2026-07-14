@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth.service';
+import { ToastService } from '../core/toast.service';
 
 declare global {
   interface Window {
@@ -19,12 +20,13 @@ export class LoginComponent implements AfterViewInit {
 
   constructor(
     private authService: AuthService,
+    private toastService: ToastService,
     private router: Router,
     private zone: NgZone,
   ) {}
 
   ngAfterViewInit(): void {
-    if (this.authService.user) {
+    if (this.authService.isLoggedIn) {
       this.router.navigateByUrl('/dashboard');
       return;
     }
@@ -35,19 +37,7 @@ export class LoginComponent implements AfterViewInit {
 
     window.google.accounts.id.initialize({
       client_id: this.clientId,
-      callback: (response: any) => {
-        const payload = this.parseJwt(response?.credential);
-
-        this.zone.run(() => {
-          this.authService.setUser({
-            username: payload?.name || payload?.given_name || 'User',
-            emailId: payload?.email || '',
-            picture: payload?.picture || '',
-          });
-
-          this.router.navigateByUrl('/dashboard');
-        });
-      },
+      callback: (response: any) => this.handleCredential(response),
     });
 
     window.google.accounts.id.renderButton(
@@ -60,6 +50,31 @@ export class LoginComponent implements AfterViewInit {
         text: 'signin_with',
       },
     );
+  }
+
+  private handleCredential(response: any): void {
+    const payload = this.parseJwt(response?.credential);
+    const emailId: string = payload?.email || '';
+
+    this.authService.verifyMembership(emailId).subscribe((match) => {
+      this.zone.run(() => {
+        if (match) {
+          this.authService.setUser({
+            username: payload?.name || match.userName || match.name || 'User',
+            emailId,
+            picture: payload?.picture || '',
+            userType: match.userType,
+          });
+
+          this.router.navigateByUrl('/dashboard');
+          return;
+        }
+
+        this.authService.revokeGoogleSession(emailId);
+        this.toastService.show('You are not a Member, please check with administrator', 'error');
+        this.router.navigateByUrl('/dashboard');
+      });
+    });
   }
 
   private parseJwt(token: string): any {

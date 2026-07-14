@@ -1,0 +1,30 @@
+[
+  {
+    "id": "basava01",
+    "name": "Basava Vidhyabhiruddhi Sanga",
+    "userName": "Basava Vidhyabhiruddhi Sanga",
+    "emailId": "sribasavavidhyabhiruddhisanga@gmail.com",
+    "userType": "Admin"
+  },
+  {
+    "id": "basava02",
+    "name": "Suhas Kumar",
+    "userName": "Suhas Sanku",
+    "emailId": "suhassanku@gmail.com",
+    "userType": "Finance"
+  },
+  {
+    "id": "basava03",
+    "name": "Suhas Kumar",
+    "userName": "Suhas Java",
+    "emailId": "suhasjavaui@gmail.com",
+    "userType": "Member"
+  },
+  {
+    "id": "basava04",
+    "name": "Revathi",
+    "userName": "Revathi",
+    "emailId": "kvrevathi2002@gmail.com",
+    "userType": "Member"
+  }
+]
