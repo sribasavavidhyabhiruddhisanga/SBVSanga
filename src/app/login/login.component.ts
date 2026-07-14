@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 import { ToastService } from '../core/toast.service';
 
@@ -12,6 +12,7 @@ declare global {
 @Component({
   selector: 'app-login',
   standalone: true,
+  imports: [RouterModule],
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements AfterViewInit {
