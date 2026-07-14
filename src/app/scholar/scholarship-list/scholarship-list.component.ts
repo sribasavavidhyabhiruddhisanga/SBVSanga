@@ -1,71 +1,44 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
+import { ScholarshipRow, ScholarshipService } from '../scholarship.service';
 
-interface Scholarship {
-  name: string;
-  amount: number;
-  eligibility: string;
-  deadline: string;
-  status: 'Open' | 'Closed';
+interface ScholarshipListViewModel {
+  loading: boolean;
+  error: boolean;
+  scholarships: ScholarshipRow[];
 }
 
+const LOADING_VM: ScholarshipListViewModel = { loading: true, error: false, scholarships: [] };
+
+/**
+ * This app runs zoneless (no zone.js), so an `HttpClient` response that lands via a bare
+ * `.subscribe()` callback never notifies Angular's change detection scheduler on its own —
+ * the table would stay on its skeleton until an unrelated click elsewhere forced a check.
+ * Exposing a single `vm$` consumed via the `async` pipe fixes that natively: the pipe calls
+ * `markForCheck()` for us on every emission, load, or failure.
+ */
 @Component({
   selector: 'app-scholarship-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, PageHeaderComponent],
+  imports: [CommonModule, PageHeaderComponent, DataTableComponent],
   templateUrl: './scholarship-list.component.html',
 })
-export class ScholarshipListComponent implements OnInit {
-  loading = true;
+export class ScholarshipListComponent {
+  private readonly scholarshipService = inject(ScholarshipService);
 
-  readonly scholarships: Scholarship[] = [
-    {
-      name: 'Merit Scholarship for SSLC Toppers',
-      amount: 10000,
-      eligibility: 'SSLC students scoring 90% and above',
-      deadline: '31 Jul 2024',
-      status: 'Open',
-    },
-    {
-      name: 'Undergraduate Support Grant',
-      amount: 25000,
-      eligibility: 'First-year degree students',
-      deadline: '15 Aug 2024',
-      status: 'Open',
-    },
-    {
-      name: 'Engineering Excellence Award',
-      amount: 40000,
-      eligibility: 'Engineering students, 3rd or 4th year',
-      deadline: '10 Jun 2024',
-      status: 'Closed',
-    },
-    {
-      name: 'Girl Child Education Support',
-      amount: 15000,
-      eligibility: 'Female students, classes 8 to 12',
-      deadline: '20 Sep 2024',
-      status: 'Open',
-    },
-    {
-      name: 'PU College Assistance',
-      amount: 8000,
-      eligibility: 'PUC first and second year students',
-      deadline: '05 May 2024',
-      status: 'Closed',
-    },
-    {
-      name: 'Postgraduate Research Grant',
-      amount: 50000,
-      eligibility: 'Postgraduate students pursuing research',
-      deadline: '28 Sep 2024',
-      status: 'Open',
-    },
+  readonly columns: DataTableColumn[] = [
+    { header: 'Scholarship', key: 'studentName', secondaryKey: 'email', type: 'two-line' },
+    { header: 'Parent and Occupation', key: 'parentAndOccupation' },
+    { header: 'Address', key: 'address' },
+    { header: 'Phone Number', key: 'phoneNumber' },
   ];
 
-  ngOnInit(): void {
-    setTimeout(() => (this.loading = false), 600);
-  }
+  readonly vm$: Observable<ScholarshipListViewModel> = this.scholarshipService.getScholarships().pipe(
+    map((scholarships): ScholarshipListViewModel => ({ loading: false, error: false, scholarships })),
+    startWith(LOADING_VM),
+    catchError(() => of<ScholarshipListViewModel>({ loading: false, error: true, scholarships: [] })),
+  );
 }

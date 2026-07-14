@@ -1,52 +1,80 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BehaviorSubject, Observable, catchError, combineLatest, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
+import { MemberRecord, MemberService } from '../member.service';
 
-interface Member {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  joinedOn: string;
-  status: 'Active' | 'Inactive';
+type StatusFilter = 'All' | 'Active' | 'Inactive';
+
+interface MemberListViewModel {
+  loading: boolean;
+  error: boolean;
+  members: MemberRecord[];
 }
 
+/**
+ * This app runs zoneless, so the member list is built the same way as Scholarship List:
+ * a single `vm$` consumed via the `async` pipe instead of a bare `.subscribe()` mutating
+ * plain fields. The status filter is folded into the same `combineLatest` (via a
+ * BehaviorSubject) rather than filtered inline in the template — an inline
+ * `members.filter(...)` call re-runs (and allocates a new array) on every unrelated change
+ * detection pass, which would otherwise silently reset the table's pagination back to page 1.
+ */
 @Component({
   selector: 'app-member-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, DataTableComponent],
   templateUrl: './member-list.component.html',
 })
-export class MemberListComponent implements OnInit {
-  loading = true;
-  searchTerm = '';
-  statusFilter: 'All' | 'Active' | 'Inactive' = 'All';
+export class MemberListComponent {
+  private readonly memberService = inject(MemberService);
+  private readonly statusFilterSubject = new BehaviorSubject<StatusFilter>('All');
 
-  readonly members: Member[] = [
-    { id: 'MEM-1042', name: 'Ramesh Kulkarni', phone: '+91 98765 43210', email: 'ramesh.kulkarni@example.com', joinedOn: '12 Jan 2024', status: 'Active' },
-    { id: 'MEM-1043', name: 'Suresh Patil', phone: '+91 98450 11223', email: 'suresh.patil@example.com', joinedOn: '03 Feb 2024', status: 'Active' },
-    { id: 'MEM-1044', name: 'Lakshmi Hegde', phone: '+91 97401 55667', email: 'lakshmi.hegde@example.com', joinedOn: '21 Feb 2024', status: 'Active' },
-    { id: 'MEM-1045', name: 'Anitha Desai', phone: '+91 96204 33221', email: 'anitha.desai@example.com', joinedOn: '02 Mar 2024', status: 'Inactive' },
-    { id: 'MEM-1046', name: 'Vijay Kumbhar', phone: '+91 99001 22334', email: 'vijay.kumbhar@example.com', joinedOn: '18 Mar 2024', status: 'Active' },
-    { id: 'MEM-1047', name: 'Prakash Naik', phone: '+91 98230 99887', email: 'prakash.naik@example.com', joinedOn: '05 Apr 2024', status: 'Inactive' },
-    { id: 'MEM-1048', name: 'Manjula Rao', phone: '+91 90080 11556', email: 'manjula.rao@example.com', joinedOn: '27 Apr 2024', status: 'Active' },
-    { id: 'MEM-1049', name: 'Ganesh Bhat', phone: '+91 93412 66778', email: 'ganesh.bhat@example.com', joinedOn: '09 May 2024', status: 'Active' },
+  get statusFilter(): StatusFilter {
+    return this.statusFilterSubject.value;
+  }
+
+  set statusFilter(value: StatusFilter) {
+    this.statusFilterSubject.next(value);
+  }
+
+  readonly columns: DataTableColumn[] = [
+    { header: 'Member', key: 'name' },
+    { header: 'Member ID', key: 'memberId' },
+    { header: 'Address', key: 'address' },
+    {
+      header: 'Status',
+      key: 'status',
+      type: 'badge',
+      badgeClassMap: {
+        Active: 'bg-emerald-50 text-emerald-700',
+        Inactive: 'bg-stone-100 text-stone-500',
+      },
+    },
   ];
 
-  ngOnInit(): void {
-    setTimeout(() => (this.loading = false), 600);
-  }
+  private readonly members$: Observable<MemberRecord[] | 'error'> = this.memberService.getMembers().pipe(
+    catchError(() => of<'error'>('error')),
+  );
 
-  get filteredMembers(): Member[] {
-    const term = this.searchTerm.trim().toLowerCase();
+  readonly vm$: Observable<MemberListViewModel> = combineLatest([
+    this.members$.pipe(startWith(undefined)),
+    this.statusFilterSubject,
+  ]).pipe(
+    map(([members, statusFilter]): MemberListViewModel => {
+      if (members === undefined) {
+        return { loading: true, error: false, members: [] };
+      }
+      if (members === 'error') {
+        return { loading: false, error: true, members: [] };
+      }
 
-    return this.members.filter((member) => {
-      const matchesSearch =
-        !term || member.name.toLowerCase().includes(term) || member.email.toLowerCase().includes(term);
-      const matchesStatus = this.statusFilter === 'All' || member.status === this.statusFilter;
+      const filtered =
+        statusFilter === 'All' ? members : members.filter((member) => member.status === statusFilter);
 
-      return matchesSearch && matchesStatus;
-    });
-  }
+      return { loading: false, error: false, members: filtered };
+    }),
+  );
 }

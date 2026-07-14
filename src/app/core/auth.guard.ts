@@ -2,21 +2,29 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
-export const authGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+/**
+ * Builds a route guard that intercepts the navigation cycle for unauthenticated
+ * or under-privileged users and redirects them before the guarded route ever activates.
+ */
+function roleGuard(role?: 'admin'): CanActivateFn {
+  return () => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
 
-  return authService.isLoggedIn ? true : router.createUrlTree(['/login']);
-};
+    if (!authService.isLoggedIn) {
+      return router.createUrlTree(['/login']);
+    }
 
-/** Restricts a route to signed-in members whose whitelist userType is Admin. */
-export const adminGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+    if (role === 'admin' && !authService.isAdmin) {
+      return router.createUrlTree(['/dashboard']);
+    }
 
-  if (!authService.isLoggedIn) {
-    return router.createUrlTree(['/login']);
-  }
+    return true;
+  };
+}
 
-  return authService.isAdmin ? true : router.createUrlTree(['/dashboard']);
-};
+/** Requires any signed-in member. */
+export const authGuard: CanActivateFn = roleGuard();
+
+/** Requires a signed-in member whose whitelist userType is Admin. */
+export const adminGuard: CanActivateFn = roleGuard('admin');

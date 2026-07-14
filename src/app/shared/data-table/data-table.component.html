@@ -1,0 +1,145 @@
+<div class="rounded-3xl bg-white p-4 shadow-lg shadow-stone-200/60 sm:p-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="relative w-full sm:max-w-xs">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
+      >
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
+        <path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        [formControl]="searchControl"
+        [placeholder]="searchPlaceholder"
+        class="w-full rounded-xl border border-stone-200 py-2 pl-9 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+      />
+    </div>
+
+    <div class="flex w-full items-center gap-3 sm:w-auto">
+      <ng-content select="[tableFilters]"></ng-content>
+    </div>
+  </div>
+
+  @if (vm$ | async; as vm) {
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full min-w-[640px] text-left text-sm">
+        <thead>
+          <tr class="border-b border-stone-100 text-xs font-semibold uppercase tracking-wide text-stone-400">
+            @for (column of columns; track column.key) {
+              <th class="py-3 pr-4">{{ column.header }}</th>
+            }
+          </tr>
+        </thead>
+
+        @if (loading) {
+          <tbody class="animate-pulse divide-y divide-stone-50">
+            @for (row of skeletonRows; track row) {
+              <tr>
+                @for (column of columns; track column.key) {
+                  <td class="py-4 pr-4"><div class="h-4 w-24 rounded bg-stone-100"></div></td>
+                }
+              </tr>
+            }
+          </tbody>
+        } @else {
+          <tbody class="divide-y divide-stone-50">
+            @for (row of vm.paged; track $index) {
+              <tr class="transition hover:bg-orange-50/40">
+                @for (column of columns; track column.key) {
+                  <td class="py-4 pr-4">
+                    @switch (column.type) {
+                      @case ('two-line') {
+                        <p class="font-semibold text-stone-900">{{ row[column.key] }}</p>
+                        @if (column.secondaryKey) {
+                          <p class="text-xs text-stone-500">{{ row[column.secondaryKey] }}</p>
+                        }
+                      }
+                      @case ('badge') {
+                        <span
+                          class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                          [ngClass]="column.badgeClassMap?.[row[column.key]] || 'bg-stone-100 text-stone-500'"
+                        >
+                          {{ row[column.key] }}
+                        </span>
+                      }
+                      @case ('currency') {
+                        <span class="font-semibold text-stone-900">
+                          {{ row[column.key] | currency: 'INR' : 'symbol' : '1.0-0' }}
+                        </span>
+                      }
+                      @default {
+                        <span class="text-stone-600">{{ row[column.key] }}</span>
+                      }
+                    }
+                  </td>
+                }
+              </tr>
+            }
+
+            @if (vm.paged.length === 0) {
+              <tr>
+                <td [attr.colspan]="columns.length" class="py-10 text-center text-sm text-stone-400">
+                  {{ emptyMessage }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        }
+      </table>
+    </div>
+
+    @if (!loading && vm.filteredCount > 0) {
+      <div class="mt-6 flex flex-col items-center justify-between gap-3 border-t border-stone-100 pt-4 sm:flex-row">
+        <p class="text-xs text-stone-400">
+          Showing {{ (vm.currentPage - 1) * pageSize + 1 }}–{{ (vm.currentPage - 1) * pageSize + vm.paged.length }}
+          of {{ vm.filteredCount }}
+        </p>
+
+        @if (vm.totalPages > 1) {
+          <div class="flex items-center gap-1.5">
+            <button
+              type="button"
+              (click)="goToPage(vm.currentPage - 1)"
+              [disabled]="vm.currentPage === 1"
+              class="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Previous page"
+            >
+              ‹
+            </button>
+
+            @for (item of vm.pageWindow; track $index) {
+              @if (item === 'ellipsis') {
+                <span class="flex h-8 w-8 items-center justify-center text-xs text-stone-400">…</span>
+              } @else {
+                <button
+                  type="button"
+                  (click)="goToPage(item)"
+                  class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition"
+                  [class.bg-orange-600]="item === vm.currentPage"
+                  [class.text-white]="item === vm.currentPage"
+                  [class.text-stone-500]="item !== vm.currentPage"
+                  [class.hover:bg-orange-50]="item !== vm.currentPage"
+                >
+                  {{ item }}
+                </button>
+              }
+            }
+
+            <button
+              type="button"
+              (click)="goToPage(vm.currentPage + 1)"
+              [disabled]="vm.currentPage === vm.totalPages"
+              class="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Next page"
+            >
+              ›
+            </button>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

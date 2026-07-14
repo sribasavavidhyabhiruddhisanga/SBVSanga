@@ -11,85 +11,32 @@
     </button>
   </app-page-header>
 
-  <div class="mt-6 rounded-3xl bg-white p-4 shadow-lg shadow-stone-200/60 sm:p-6">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div class="relative w-full sm:max-w-xs">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
-        >
-          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" />
-          <path d="m20 20-3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-        </svg>
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          placeholder="Search by name or email"
-          class="w-full rounded-xl border border-stone-200 py-2 pl-9 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-        />
+  @if (vm$ | async; as vm) {
+    @if (vm.error) {
+      <div class="mt-6 rounded-3xl border border-dashed border-red-200 bg-red-50/60 px-5 py-3 text-sm text-red-700">
+        Couldn't load members right now. Please try again later.
       </div>
+    }
 
-      <select
-        [(ngModel)]="statusFilter"
-        class="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100 sm:w-44"
+    <div class="mt-6">
+      <app-data-table
+        [data]="vm.members"
+        [columns]="columns"
+        [searchKeys]="['name', 'memberId']"
+        [loading]="vm.loading"
+        searchPlaceholder="Search by name or member ID"
+        emptyMessage="No members match your search."
       >
-        <option value="All">All statuses</option>
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
-      </select>
+        <select
+          tableFilters
+          [(ngModel)]="statusFilter"
+          class="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100 sm:w-44"
+        >
+          <option value="All">All statuses</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </app-data-table>
     </div>
-
-    <div class="mt-6 overflow-x-auto">
-      <table class="w-full min-w-[640px] text-left text-sm">
-        <thead>
-          <tr class="border-b border-stone-100 text-xs font-semibold uppercase tracking-wide text-stone-400">
-            <th class="py-3 pr-4">Member</th>
-            <th class="py-3 pr-4">Member ID</th>
-            <th class="py-3 pr-4">Phone</th>
-            <th class="py-3 pr-4">Joined On</th>
-            <th class="py-3 pr-4">Status</th>
-          </tr>
-        </thead>
-
-        <tbody *ngIf="loading" class="animate-pulse divide-y divide-stone-50">
-          <tr *ngFor="let row of [1, 2, 3, 4, 5]">
-            <td class="py-4 pr-4"><div class="h-4 w-32 rounded bg-stone-100"></div></td>
-            <td class="py-4 pr-4"><div class="h-4 w-20 rounded bg-stone-100"></div></td>
-            <td class="py-4 pr-4"><div class="h-4 w-28 rounded bg-stone-100"></div></td>
-            <td class="py-4 pr-4"><div class="h-4 w-24 rounded bg-stone-100"></div></td>
-            <td class="py-4 pr-4"><div class="h-4 w-16 rounded bg-stone-100"></div></td>
-          </tr>
-        </tbody>
-
-        <tbody *ngIf="!loading" class="divide-y divide-stone-50">
-          <tr *ngFor="let member of filteredMembers" class="transition hover:bg-orange-50/40">
-            <td class="py-4 pr-4">
-              <p class="font-semibold text-stone-900">{{ member.name }}</p>
-              <p class="text-xs text-stone-500">{{ member.email }}</p>
-            </td>
-            <td class="py-4 pr-4 text-stone-600">{{ member.id }}</td>
-            <td class="py-4 pr-4 text-stone-600">{{ member.phone }}</td>
-            <td class="py-4 pr-4 text-stone-600">{{ member.joinedOn }}</td>
-            <td class="py-4 pr-4">
-              <span
-                class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-                [class.bg-emerald-50]="member.status === 'Active'"
-                [class.text-emerald-700]="member.status === 'Active'"
-                [class.bg-stone-100]="member.status === 'Inactive'"
-                [class.text-stone-500]="member.status === 'Inactive'"
-              >
-                {{ member.status }}
-              </span>
-            </td>
-          </tr>
-
-          <tr *ngIf="filteredMembers.length === 0">
-            <td colspan="5" class="py-10 text-center text-sm text-stone-400">No members match your search.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  }
 </div>

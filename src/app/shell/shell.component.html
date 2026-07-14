@@ -162,6 +162,7 @@
 
         <a
           routerLink="/gallery"
+          (click)="onProtectedLinkClick($event)"
           routerLinkActive="bg-orange-50 text-orange-700"
           class="rounded-xl px-3 py-2 text-sm font-medium text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
         >
@@ -448,6 +449,7 @@
 
           <a
             routerLink="/gallery"
+            (click)="onProtectedLinkClick($event)"
             routerLinkActive="bg-orange-50 text-orange-700"
             class="block rounded-xl px-3 py-2.5 text-sm font-medium text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
           >

@@ -52,6 +52,12 @@ export class ShellComponent implements OnInit {
 
   toggleDesktopMenu(menu: DesktopMenu, event: Event): void {
     event.stopPropagation();
+
+    if (!this.authService.isLoggedIn) {
+      this.redirectToLogin();
+      return;
+    }
+
     this.userMenuOpen = false;
     this.openDesktopMenu = this.openDesktopMenu === menu ? null : menu;
   }
@@ -65,10 +71,23 @@ export class ShellComponent implements OnInit {
   }
 
   toggleMobileGroup(group: MobileGroup): void {
+    if (!this.authService.isLoggedIn) {
+      this.redirectToLogin();
+      return;
+    }
+
     if (group === 'community') {
       this.mobileCommunityOpen = !this.mobileCommunityOpen;
     } else {
       this.mobileUpdatesOpen = !this.mobileUpdatesOpen;
+    }
+  }
+
+  /** Blocks direct navigation links (e.g. Gallery) for guests, redirecting to Login instead. */
+  onProtectedLinkClick(event: Event): void {
+    if (!this.authService.isLoggedIn) {
+      event.preventDefault();
+      this.redirectToLogin();
     }
   }
 
@@ -90,6 +109,12 @@ export class ShellComponent implements OnInit {
 
   logout(): void {
     this.authService.signOut();
+    this.closeAllMenus();
+    this.router.navigateByUrl('/login');
+  }
+
+  /** Cancels any menu state and sends an unauthenticated visitor to Login. */
+  private redirectToLogin(): void {
     this.closeAllMenus();
     this.router.navigateByUrl('/login');
   }
