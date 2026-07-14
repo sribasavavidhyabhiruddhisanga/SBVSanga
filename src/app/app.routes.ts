@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard } from './core/auth.guard';
+import { adminGuard } from './core/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { ShellComponent } from './shell/shell.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -22,19 +22,19 @@ export const routes: Routes = [
       // Public: viewable without signing in.
       { path: 'dashboard', component: DashboardComponent },
 
-      // "Our Community" menu — any signed-in member.
-      { path: 'community/member-list', component: MemberListComponent, canActivate: [authGuard] },
-      { path: 'community/donor-list', component: DonorListComponent, canActivate: [authGuard] },
-      { path: 'community/scholarship-list', component: ScholarshipListComponent, canActivate: [authGuard] },
-      { path: 'community/donate', component: DonationComponent, canActivate: [authGuard] },
-      { path: 'community/scholarship-apply', component: ScholarshipApplyComponent, canActivate: [authGuard] },
+      // "Our Community" menu — public, no sign-in required.
+      { path: 'community/member-list', component: MemberListComponent },
+      { path: 'community/donor-list', component: DonorListComponent },
+      { path: 'community/scholarship-list', component: ScholarshipListComponent },
+      { path: 'community/donate', component: DonationComponent },
+      { path: 'community/scholarship-apply', component: ScholarshipApplyComponent },
 
       // "Updates" menu — Admin members only.
       { path: 'updates/scholar-applied', component: ScholarAppliedComponent, canActivate: [adminGuard] },
       { path: 'updates/donation-list', component: DonationComponent, canActivate: [adminGuard] },
       { path: 'updates/upcoming-events', component: UpcomingEventsComponent, canActivate: [adminGuard] },
 
-      { path: 'gallery', component: GalleryComponent, canActivate: [authGuard] },
+      { path: 'gallery', component: GalleryComponent },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
