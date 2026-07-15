@@ -1,124 +1,151 @@
 <div class="min-h-screen bg-stone-950">
-    <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-2">
-      <section class="relative hidden flex-col overflow-hidden bg-gradient-to-br from-orange-700 via-amber-700 to-stone-900 p-10 text-white lg:flex sm:p-12">
-        <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
-        <div class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-orange-400/20 blur-3xl"></div>
+  <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-2">
+    <section
+      class="relative hidden flex-col overflow-hidden bg-gradient-to-br from-orange-700 via-amber-700 to-stone-900 p-10 text-white lg:flex sm:p-12"
+    >
+      <div
+        class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"
+      ></div>
+      <div
+        class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-orange-400/20 blur-3xl"
+      ></div>
 
-        <div class="relative flex items-center justify-between gap-4">
-          <a routerLink="/dashboard" class="flex min-w-0 items-center gap-3">
-            <div
-              class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white ring-1 ring-white/40"
-            >
-              <img
-                src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
-                alt="Basava VidyaBhiruddhi Sanga logo"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            <div class="min-w-0">
-              <p class="truncate text-base font-semibold leading-tight">ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ</p>
-              <p class="truncate text-xs text-orange-100">ಸಾಧನೆಗೆ ಪ್ರೋತ್ಸಾಹ, ಕನಸುಗಳಿಗೆ ಆರ್ಥಿಕ ನೆರವು.</p>
-            </div>
-          </a>
-
-          <a
-            routerLink="/dashboard"
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+      <div class="relative flex items-center justify-between gap-4">
+        <a routerLink="/dashboard" class="flex min-w-0 items-center gap-3">
+          <div
+            class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white ring-1 ring-white/40"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3.5 w-3.5">
-              <path
-                d="m3 11 9-8 9 8M5 10v10h5v-6h4v6h5V10"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Dashboard
-          </a>
-        </div>
-
-        <div class="relative mt-12 flex flex-1 flex-col justify-center gap-8">
-          <div class="flex items-center gap-5">
-            <div
-              class="h-28 w-28 shrink-0 overflow-hidden rounded-3xl shadow-2xl ring-2 ring-white/25 sm:h-32 sm:w-32"
-            >
-              <img
-                src="assets/dashboardImages/shivakumarswamyji.jpg"
-                alt="Sri Shivakumara Swamiji"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-200">Blessings of</p>
-              <p class="mt-1.5 text-lg font-semibold leading-snug">Sri Shivakumara Swamiji</p>
-            </div>
+            <img
+              src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
+              alt="Basava VidyaBhiruddhi Sanga logo"
+              class="h-full w-full object-cover"
+            />
           </div>
-
-          <div class="space-y-4">
-            <p class="text-3xl font-bold leading-tight sm:text-4xl">
-              Sign in to manage members, scholarships and donations.
+          <div class="min-w-0">
+            <p class="truncate text-base font-semibold leading-tight">
+              ಶ್ರೀ ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ
             </p>
-            <p class="max-w-md text-sm text-orange-50 sm:text-base">
-              Authenticate securely with Google to access the members' area. Browsing the public
-              dashboard never requires an account.
+            <p class="truncate text-xs text-orange-100">
+              ಸಾಧನೆಗೆ ಪ್ರೋತ್ಸಾಹ, ಕನಸುಗಳಿಗೆ ಆರ್ಥಿಕ ನೆರವು.
             </p>
           </div>
-        </div>
+        </a>
 
-        <div class="relative grid grid-cols-3 gap-4 text-sm text-orange-50">
-          <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">Members</div>
-          <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">Scholarships</div>
-          <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">Gallery</div>
-        </div>
-      </section>
+        <a
+          routerLink="/dashboard"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            class="h-3.5 w-3.5"
+          >
+            <path
+              d="m3 11 9-8 9 8M5 10v10h5v-6h4v6h5V10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Dashboard
+        </a>
+      </div>
 
-      <section class="flex items-center justify-center p-6 sm:p-10">
-        <div class="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-8 shadow-2xl shadow-stone-300/30">
-          <a routerLink="/dashboard" class="mb-6 flex items-center justify-center gap-2 lg:hidden">
-            <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-stone-200">
-              <img
-                src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
-                alt="Basava VidyaBhiruddhi Sanga logo"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            <span class="text-sm font-semibold text-stone-700">ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ</span>
-          </a>
-
-          <div class="mb-8 text-center">
-            <div
-              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl shadow-lg shadow-orange-500/30 ring-1 ring-stone-200"
-            >
-              <img
-                src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
-                alt="Basava VidyaBhiruddhi Sanga logo"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            <h1 class="text-3xl font-bold text-stone-900">Welcome back</h1>
-            <p class="mt-2 text-sm text-stone-500">
-              Sign in with Google to continue to your dashboard.
+      <div class="relative mt-12 flex flex-1 flex-col justify-center gap-8">
+        <div class="flex items-center gap-5">
+          <div
+            class="h-28 w-28 shrink-0 overflow-hidden rounded-3xl shadow-2xl ring-2 ring-white/25 sm:h-32 sm:w-32"
+          >
+            <img
+              src="assets/dashboardImages/shivakumarswamyji.jpg"
+              alt="Sri Shivakumara Swamiji"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-200">
+              Blessings of
             </p>
+            <p class="mt-1.5 text-lg font-semibold leading-snug">Sri Shivakumara Swamiji</p>
           </div>
+        </div>
 
-          <div class="rounded-2xl border border-stone-200 bg-stone-50 p-6">
-            <div class="flex justify-center">
-              <div id="googleBtn"></div>
-            </div>
-          </div>
-
-          <p class="mt-6 text-center text-xs text-stone-400">
-            Secure Google Identity Services integration.
+        <div class="space-y-4">
+          <p class="text-3xl font-bold leading-tight sm:text-4xl">
+            Sign in to manage members, scholarships and donations.
           </p>
-
-          <a
-            routerLink="/dashboard"
-            class="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-stone-500 transition hover:bg-stone-50 hover:text-orange-700"
-          >
-            Continue to Dashboard without signing in
-          </a>
+          <p class="max-w-md text-sm text-orange-50 sm:text-base">
+            Authenticate securely with Google to access the members' area. Browsing the public
+            dashboard never requires an account.
+          </p>
         </div>
-      </section>
-    </div>
+      </div>
+
+      <div class="relative grid grid-cols-3 gap-4 text-sm text-orange-50">
+        <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">
+          Members
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">
+          Scholarships
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/10 p-4 text-center backdrop-blur">
+          Gallery
+        </div>
+      </div>
+    </section>
+
+    <section class="flex items-center justify-center p-6 sm:p-10">
+      <div
+        class="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-8 shadow-2xl shadow-stone-300/30"
+      >
+        <a routerLink="/dashboard" class="mb-6 flex items-center justify-center gap-2 lg:hidden">
+          <div
+            class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-stone-200"
+          >
+            <img
+              src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
+              alt="Basava VidyaBhiruddhi Sanga logo"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <span class="text-sm font-semibold text-stone-700">ಶ್ರೀ ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ</span>
+        </a>
+
+        <div class="mb-8 text-center">
+          <div
+            class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl shadow-lg shadow-orange-500/30 ring-1 ring-stone-200"
+          >
+            <img
+              src="assets/dashboardImages/basavaVidyabhiruddhiSanga_logo.jpg"
+              alt="Basava VidyaBhiruddhi Sanga logo"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <h1 class="text-3xl font-bold text-stone-900">Welcome back</h1>
+          <p class="mt-2 text-sm text-stone-500">
+            Sign in with Google to continue to your dashboard.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-stone-200 bg-stone-50 p-6">
+          <div class="flex justify-center">
+            <div id="googleBtn"></div>
+          </div>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-stone-400">
+          Secure Google Identity Services integration.
+        </p>
+
+        <a
+          routerLink="/dashboard"
+          class="mt-4 flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold text-stone-500 transition hover:bg-stone-50 hover:text-orange-700"
+        >
+          Continue to Dashboard without signing in
+        </a>
+      </div>
+    </section>
   </div>
+</div>
