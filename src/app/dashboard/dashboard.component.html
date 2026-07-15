@@ -1,48 +1,29 @@
 <div class="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
   @if (authService.user; as user) {
-    <!-- Hero / welcome banner -->
-    <section
-      class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-700 via-amber-700 to-stone-900 p-8 text-white shadow-xl sm:p-12"
+    <app-hero-banner
+      eyebrow="Welcome"
+      title="ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ"
+      subtitle="ನಡೆದಾಡುವ ದೇವರು ಶ್ರೀ ಶ್ರೀ ಶ್ರೀ ಶಿವಕುಮಾರ ಮಹಾಸ್ವಾಮಿಗಳ ಕೃಪಾಶೀರ್ವಾದಗಳೊಂದಿಗೆ"
     >
-      <div
-        class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"
-      ></div>
-      <div
-        class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-orange-400/20 blur-3xl"
-      ></div>
-
-      <div class="relative">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-amber-200">Welcome back</p>
-        <h2 class="mt-3 max-w-xl text-3xl font-bold leading-tight sm:text-4xl">
-          Hello, {{ user.username }}
-        </h2>
-        <p class="mt-4 max-w-xl text-sm text-orange-50 sm:text-base">
-          Here's a quick overview of your account. Use the links below to jump straight into
-          members, scholarships or the gallery.
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a
-            routerLink="/community/member-list"
-            class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-          >
-            View Members
-          </a>
-          <a
-            routerLink="/community/scholarship-list"
-            class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-          >
-            Scholarships
-          </a>
-          <a
-            routerLink="/gallery"
-            class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-          >
-            Gallery
-          </a>
-        </div>
-      </div>
-    </section>
+      <a
+        routerLink="/community/member-list"
+        class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+      >
+        View Members
+      </a>
+      <a
+        routerLink="/community/scholarship-list"
+        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+      >
+        Scholarships
+      </a>
+      <a
+        routerLink="/gallery"
+        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+      >
+        Gallery
+      </a>
+    </app-hero-banner>
 
     <!-- Overlapping profile stat strip -->
     <section
@@ -108,220 +89,68 @@
         </div>
       </div>
     </section>
-
-    <!-- Account security / session details -->
-    <section class="mt-14">
-      <p class="text-center text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">
-        Account Security
-      </p>
-      <h3 class="mt-2 text-center text-2xl font-bold text-stone-900 sm:text-3xl">
-        How your session is protected
-      </h3>
-      <div class="mt-3 flex items-center justify-center gap-1.5">
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-300"></span>
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-700"></span>
-      </div>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <path
-                d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="m9 12 2 2 4-4"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Google Sign-In</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            You authenticate securely through Google Identity Services — no password is ever stored
-            by this app.
-          </p>
-        </div>
-
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <rect
-                x="5"
-                y="11"
-                width="14"
-                height="9"
-                rx="2"
-                stroke="currentColor"
-                stroke-width="1.6"
-              />
-              <path
-                d="M8 11V7a4 4 0 0 1 8 0v4"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Protected Sections</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            Members, Scholar and Gallery sit behind an auth guard — only a signed-in user can open
-            those pages.
-          </p>
-        </div>
-
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <path
-                d="M4 6h16M4 12h16M4 18h7"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Local Session</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            Your profile details stay in this browser's session and are cleared the moment you sign
-            out.
-          </p>
-        </div>
-      </div>
-    </section>
   } @else {
-    <!-- Guest hero / welcome banner -->
-    <section
-      class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-700 via-amber-700 to-stone-900 p-8 text-white shadow-xl sm:p-12"
+    <app-hero-banner
+      eyebrow="Welcome"
+      title="ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ"
+      subtitle="ನಡೆದಾಡುವ ದೇವರು ಶ್ರೀ ಶ್ರೀ ಶ್ರೀ ಶಿವಕುಮಾರ ಮಹಾಸ್ವಾಮಿಗಳ ಕೃಪಾಶೀರ್ವಾದಗಳೊಂದಿಗೆ"
     >
-      <div
-        class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl"
-      ></div>
-      <div
-        class="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-orange-400/20 blur-3xl"
-      ></div>
-
-      <div class="relative">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-amber-200">Welcome</p>
-        <h2 class="mt-3 max-w-xl text-3xl font-bold leading-tight sm:text-4xl">
-          ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ
-        </h2>
-        <p class="mt-4 max-w-xl text-sm text-orange-50 sm:text-base">
-          Sign in with Google to manage members, review scholarships and access your account.
-          Browsing the dashboard doesn't require an account.
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a
-            routerLink="/login"
-            class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-          >
-            Members Login
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- What you can do -->
-    <section class="mt-14">
-      <p class="text-center text-xs font-semibold uppercase tracking-[0.3em] text-orange-600">
-        Explore
-      </p>
-      <h3 class="mt-2 text-center text-2xl font-bold text-stone-900 sm:text-3xl">
-        What you can do here
-      </h3>
-      <div class="mt-3 flex items-center justify-center gap-1.5">
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-300"></span>
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
-        <span class="h-1.5 w-1.5 rounded-full bg-orange-700"></span>
-      </div>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <path
-                d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5Z"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Members</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            Sign in to view the member list, donor records and log new donations.
-          </p>
-        </div>
-
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <path
-                d="M12 3 2 8l10 5 8-4v6M6 10v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Scholar</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            Sign in to browse open scholarships, apply, and track applications.
-          </p>
-        </div>
-
-        <div
-          class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-              <path
-                d="M4 5h16v14H4V5Zm0 10 4-4 4 4 4-5 4 4"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <h4 class="mt-4 text-base font-semibold text-stone-900">Gallery</h4>
-          <p class="mt-2 text-sm text-stone-500">
-            Sign in to view photos from community events and programs.
-          </p>
-        </div>
-      </div>
-    </section>
+      <a
+        routerLink="/login"
+        class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+      >
+        Members Login
+      </a>
+    </app-hero-banner>
   }
+
+  <!-- Our Legacy: founders & leadership -->
+  <section class="mt-14">
+    <app-section-intro eyebrow="Our Legacy" title="The people who built this Sangha" />
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      <app-profile-card
+        image="assets/dashboardImages/hosalappa.jpg"
+        alt="ಸಂಸ್ಥಾಪಕ ಅಧ್ಯಕ್ಷರು ಶ್ರೀ ಹೊಸಳ್ಳಪ್ಪನವರು"
+        description="ಸಂಸ್ಥಾಪಕ ಅಧ್ಯಕ್ಷರು ಶ್ರೀ ಹೊಸಳ್ಳಪ್ಪನವರು, ನಿವೃತ್ತ ವ್ಯವಸ್ಥಾಪಕರು, ಕೃಷಿ ಇಲಾಖೆ, ಬೆಂಗಳೂರು.. ಇವರ ನೇತೃತ್ವದಲ್ಲಿ ಹಲವಾರು ಮಹನೀಯರು ಒಂದು ಮಹತ್ತರ ಧ್ಯೇಯದೊಂದಿಗೆ ಈ ಸಂಸ್ಥೆಯನ್ನು ಹುಟ್ಟು ಹಾಕಿದರು"
+        imagePosition="left"
+      />
+      <app-profile-card
+        image="assets/dashboardImages/chandrashekar.jpg"
+        alt="ಜಸ್ಟಿಸ್ ಡಿ ಎಂ ಚಂದ್ರಶೇಖರ್"
+        description="ನಮ್ಮ ಸಂಘವನ್ನು ಮುಂದಿನ ಹಂತಕ್ಕೆ ತೆಗೆದುಕೊಂಡು ಹೋದವರು ಉಚ್ಚ ನ್ಯಾಯಾಲಯದ ನ್ಯಾಯಾಧೀಶರಾಗಿದ್ದ ಸರಳ ಸಜ್ಜನಿಕೆಯ ಸಾಕಾರ ಮೂರ್ತಿ ಕೀರ್ತಿಶೇಷ ಜಸ್ಟಿಸ್ ಡಿ ಎಂ ಚಂದ್ರಶೇರ್ ಅವರು"
+        imagePosition="right"
+      />
+    </div>
+  </section>
+
+  <!-- Major donors -->
+  <section class="mt-14">
+    <div class="rounded-3xl bg-white p-8 shadow-lg shadow-stone-200/60 sm:p-10">
+      <div class="text-center">
+        <h3 class="text-2xl font-bold text-stone-900 sm:text-3xl">ದಾನಿಗಳೇ ನಮ್ಮ ಸಂಘದ ಆಧಾರ</h3>
+        <p class="mt-2 text-sm text-stone-500 sm:text-base">
+          ಇವರಿಬ್ಬರು ₹ 10 ಲಕ್ಷ ದೇಣಿಗೆ ನೀಡಿರುವ ಮಹಾದಾನಿಗಳು
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-8 sm:grid-cols-2">
+        @for (donor of majorDonors; track donor.image) {
+          <div class="flex flex-col items-center gap-4 text-center">
+            <div
+              class="h-36 w-36 overflow-hidden rounded-3xl shadow-md ring-4 ring-orange-50 sm:h-40 sm:w-40"
+            >
+              <img
+                [src]="donor.image"
+                [alt]="donor.alt"
+                [style.object-position]="donor.objectPosition"
+                class="h-full w-full object-cover"
+              />
+            </div>
+            <p class="max-w-xs text-sm font-medium text-stone-600">{{ donor.caption }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
 </div>

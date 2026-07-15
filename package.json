@@ -1,6 +1,10 @@
 {
   "name": "basava-vidya-bhiruddhi-sanga",
   "version": "0.0.0",
+  "author": "Suhas Sanand Kumar suhassanku@gmail.com",
+  "contributors": [
+    "Suhas Sanand Kumar"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
