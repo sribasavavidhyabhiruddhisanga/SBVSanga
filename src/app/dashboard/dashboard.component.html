@@ -1,4 +1,58 @@
 <div class="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
+  @if (announcements$ | async; as announcements) {
+    @if (announcements.length > 0) {
+      <div
+        class="mb-6 flex items-center overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 shadow-lg shadow-orange-900/10"
+      >
+        <div
+          class="flex shrink-0 items-center gap-2 bg-stone-900/15 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white sm:px-5"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+            <path
+              d="M3 11v2a2 2 0 0 0 2 2h1l3 5 2-1-2.5-4H12l7 4V7l-7 4H6a2 2 0 0 0-2 2Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="hidden sm:inline">Announcements</span>
+        </div>
+
+        <div class="relative flex-1 overflow-hidden py-2.5">
+          <div class="flex w-max animate-marquee items-center gap-10 whitespace-nowrap pr-10">
+            @for (event of announcements; track 'a-' + event.title + event.date) {
+              <span class="flex items-center gap-2 text-sm font-medium text-white">
+                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-white/70"></span>
+                {{ event.title }}
+                <span class="text-white/70">· {{ formatEventDate(event.date) }}</span>
+                @if (event.location) {
+                  <span class="text-white/70">· {{ event.location }}</span>
+                }
+                @if (event.description) {
+                  <span class="text-white/70">· {{ event.description }}</span>
+                }
+              </span>
+            }
+            @for (event of announcements; track 'b-' + event.title + event.date) {
+              <span class="flex items-center gap-2 text-sm font-medium text-white" aria-hidden="true">
+                <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-white/70"></span>
+                {{ event.title }}
+                <span class="text-white/70">· {{ formatEventDate(event.date) }}</span>
+                @if (event.location) {
+                  <span class="text-white/70">· {{ event.location }}</span>
+                }
+                @if (event.description) {
+                  <span class="text-white/70">· {{ event.description }}</span>
+                }
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+
   @if (authService.user; as user) {
     <app-hero-banner
       eyebrow="Welcome"
@@ -331,13 +385,13 @@
       <div class="mx-auto mt-12 max-w-3xl border-t border-stone-100 pt-10">
         <h4 class="text-center text-xl font-bold text-stone-900 sm:text-2xl">ಸಾತ್ವಿಕ ಪ್ರಸಕ್ತಿ</h4>
         <p class="mt-4 text-sm leading-relaxed text-stone-600 sm:text-base">
-          ಕನ್ನಡ ಪ್ರಾಧ್ಯಾಪಕರಾಗಿ, ಕನ್ನಡ ನಿಘಂಟುಕಾರರಾಗಿ, ಸರಳ ವ್ಯಕ್ತಿತ್ವಕ್ಕೆ ಹೆಸರಾದ ಪೋ. ಟಿ.ಆರ್.
-          ಮಹಾದೇವಯ್ಯನವರಿಗೆ ಅವರ ಶಿಷ್ಯರು, ಮಿತ್ರರು, ಅಭಿಮಾನಿಗಳು 1995ರಲ್ಲಿ ಅವರ ಷಷ್ಠಿ ಸಂದರ್ಭದಲ್ಲಿ
+          ಕನ್ನಡ ಪ್ರಾಧ್ಯಾಪಕರಾಗಿ, ಕನ್ನಡ ನಿಘಂಟುಕಾರರಾಗಿ, ಸರಳ ವ್ಯಕ್ತಿತ್ವಕ್ಕೆ ಹೆಸರಾದ ಪೋ.
+          ಟಿ.ಆರ್.ಮಹಾದೇವಯ್ಯನವರಿಗೆ ಅವರ ಶಿಷ್ಯರು, ಮಿತ್ರರು, ಅಭಿಮಾನಿಗಳು 1995ರಲ್ಲಿ ಅವರ ಷಷ್ಠಿ ಸಂದರ್ಭದಲ್ಲಿ
           ಅಭಿನಂದನಾ ಸಮಾರಂಭ ಏರ್ಪಡಿಸಿ ಒಂದು ಲಕ್ಷ ರುಪಾಯಿಗಳ ನಿಧಿಯನ್ನು ಅರ್ಪಿಸಿದರು. ಶ್ರೀಯುತರು ಈ ಹಣವನ್ನು
           ಸ್ವಂತಕ್ಕೆ ಬಳಸದೆ ಬೆಳೆಸಿ 2 ಲಕ್ಷ ರುಪಾಯಿಗಳ ಪುದುವಟ್ಟನ್ನು ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನಿಧಿ ಎಂದು ಶ್ರೀ ಬಸವ
-          ವಿಧ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘದಲ್ಲಿಟ್ಟಿದ್ದಾರೆ. ಮುಂದುವರೆದು ಅವರ ಹಿತೈಷಿಗಳು, ಸಾಹಿತಿಗಳು ಮತ್ತು ಬಂಧು - ಮಿತ್ರರು
-          ಕೈ ಜೋಡಿಸಿ ಒಟ್ಟು ಐದು ಲಕ್ಷ ಸಂಗ್ರಹಿಸಿದ್ದಾರೆ. ಅದರಲ್ಲಿ ಬರುವ ಬಡ್ಡಿಯಲ್ಲಿ ಶ್ರೀ ಟಿ ಆರ್ಪ್ರ ಎಂ ಅವರ
-          ಆಶಯದಂತೆ ಪ್ರತಿ ವರ್ಷ ಎಲೆ ಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಸೇವೆ ಮಾಡುತ್ತಿರುವ ಹಾಗೂ ಆರ್ಥಿಕವಾಗಿ
+          ವಿಧ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘದಲ್ಲಿಟ್ಟಿದ್ದಾರೆ. ಮುಂದುವರೆದು ಅವರ ಹಿತೈಷಿಗಳು, ಸಾಹಿತಿಗಳು ಮತ್ತು ಬಂಧು -
+          ಮಿತ್ರರು ಕೈ ಜೋಡಿಸಿ ಒಟ್ಟು ಐದು ಲಕ್ಷ ಸಂಗ್ರಹಿಸಿದ್ದಾರೆ. ಅದರಲ್ಲಿ ಬರುವ ಬಡ್ಡಿಯಲ್ಲಿ ಶ್ರೀ ಟಿ ಆರ್ ಎಂ
+          ಅವರ ಆಶಯದಂತೆ ಪ್ರತಿ ವರ್ಷ ಎಲೆ ಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಸೇವೆ ಮಾಡುತ್ತಿರುವ ಹಾಗೂ ಆರ್ಥಿಕವಾಗಿ
           ಸಂಕಷ್ಟದಲ್ಲಿರುವ ಸಜ್ಜನ ಸಾಹಿತಿಯೊಬ್ಬರಿಗೆ ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನೀಡಿ ಸನ್ಮಾನಿಸಲಾಗುತ್ತಿದೆ.
         </p>
       </div>
@@ -350,7 +404,9 @@
 
         <div class="mt-8 grid gap-3 sm:grid-cols-2">
           @for (awardee of satvikaAwardees; track awardee.year) {
-            <div class="flex items-start gap-3 rounded-2xl bg-stone-50 p-4 transition hover:bg-orange-50/60">
+            <div
+              class="flex items-start gap-3 rounded-2xl bg-stone-50 p-4 transition hover:bg-orange-50/60"
+            >
               <span
                 class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-orange-700"
               >

@@ -1,18 +1,20 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { ToastService } from '../../core/toast.service';
+import { extractApiErrorMessage } from '../../core/api-error.util';
+import { formatDisplayDate, parseIsoDate, toIsoDate } from '../../core/date.util';
+import { UpcomingEventRecord, UpcomingEventsService } from '../upcoming-events.service';
 
-interface UpcomingEvent {
-  title: string;
-  date: string;
-  dateValue?: Date;
-  location: string;
-  description?: string;
-  colorFrom: string;
-  colorTo: string;
+interface UpcomingEventsViewModel {
+  loading: boolean;
+  error: boolean;
+  events: UpcomingEventRecord[];
 }
+
+const MS_PER_DAY = 86_400_000;
 
 const GRADIENT_PALETTE: ReadonlyArray<readonly [string, string]> = [
   ['from-orange-400', 'to-amber-600'],
@@ -22,72 +24,125 @@ const GRADIENT_PALETTE: ReadonlyArray<readonly [string, string]> = [
   ['from-amber-500', 'to-stone-700'],
 ];
 
-const MS_PER_DAY = 86_400_000;
+function sortByDate(events: UpcomingEventRecord[]): UpcomingEventRecord[] {
+  return [...events].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+}
 
+/**
+ * This app runs zoneless, so the roster loaded on init is built from a single `vm$`
+ * consumed via the `async` pipe rather than a bare `.subscribe()` mutating plain fields.
+ * `refresh$` re-triggers the GET on `ngOnInit` and again after a successful create so the
+ * grid reflects what the server actually persisted rather than an optimistic local push.
+ */
 @Component({
   selector: 'app-upcoming-events',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent],
+  imports: [AsyncPipe, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './upcoming-events.component.html',
 })
-export class UpcomingEventsComponent {
+export class UpcomingEventsComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly eventsService = inject(UpcomingEventsService);
+  private readonly toastService = inject(ToastService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
+
   submitting = false;
+  readonly minDate = toIsoDate(new Date());
 
-  readonly minDate = this.toIsoDate(new Date());
+  readonly form = this.fb.group({
+    title: ['', Validators.required],
+    date: ['', Validators.required],
+    location: ['', Validators.required],
+    description: ['', Validators.required],
+  });
 
-  events: UpcomingEvent[] = [
-    { title: 'Annual General Meeting', date: 'To be announced', location: 'Community Hall', colorFrom: 'from-orange-400', colorTo: 'to-amber-600' },
-    { title: 'Scholarship Distribution', date: 'To be announced', location: 'Community Hall', colorFrom: 'from-amber-400', colorTo: 'to-orange-600' },
-    { title: 'Health Check-up Camp', date: 'To be announced', location: 'Community Hall', colorFrom: 'from-stone-500', colorTo: 'to-orange-600' },
-  ];
+  private readonly events$: Observable<UpcomingEventRecord[] | 'error'> = this.refresh$.pipe(
+    switchMap(() =>
+      this.eventsService.getEvents().pipe(
+        catchError((error) => {
+          this.toastService.show(
+            extractApiErrorMessage(error, "Couldn't load upcoming events right now."),
+            'error',
+          );
+          return of<'error'>('error');
+        }),
+      ),
+    ),
+  );
 
-  form: { title: string; date: string; location: string; description: string } = {
-    title: '',
-    date: '',
-    location: '',
-    description: '',
-  };
+  readonly vm$: Observable<UpcomingEventsViewModel> = this.events$.pipe(
+    startWith(undefined),
+    map((events): UpcomingEventsViewModel => {
+      if (events === undefined) {
+        return { loading: true, error: false, events: [] };
+      }
+      if (events === 'error') {
+        return { loading: false, error: true, events: [] };
+      }
 
-  constructor(private toastService: ToastService) {}
+      return { loading: false, error: false, events: sortByDate(events) };
+    }),
+  );
+
+  ngOnInit(): void {
+    this.refresh$.next();
+  }
 
   createEvent(): void {
-    if (!this.form.title || !this.form.date || !this.form.location || this.form.date < this.minDate) {
+    if (this.form.invalid || this.submitting) {
       return;
     }
 
     this.submitting = true;
-    const [colorFrom, colorTo] = GRADIENT_PALETTE[this.events.length % GRADIENT_PALETTE.length];
-    const dateValue = this.parseDateInput(this.form.date);
+    const value = this.form.getRawValue();
+    const payload: UpcomingEventRecord = {
+      title: value.title ?? '',
+      date: value.date ?? '',
+      location: value.location ?? '',
+      description: value.description ?? '',
+    };
 
-    setTimeout(() => {
-      this.events = [
-        {
-          title: this.form.title,
-          date: dateValue.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-          dateValue,
-          location: this.form.location,
-          description: this.form.description || undefined,
-          colorFrom,
-          colorTo,
+    this.eventsService
+      .getEvents()
+      .pipe(switchMap((existing) => this.eventsService.createEvent([...existing, payload])))
+      .subscribe({
+        next: () => {
+          this.submitting = false;
+          this.form.reset({ title: '', date: '', location: '', description: '' });
+          this.toastService.show('Upcoming event created.', 'success');
+          this.refresh$.next();
+          this.cdr.markForCheck();
         },
-        ...this.events,
-      ];
+        error: (error) => {
+          this.submitting = false;
+          this.toastService.show(
+            extractApiErrorMessage(error, 'Could not add the event. Please try again.'),
+            'error',
+          );
+          this.cdr.markForCheck();
+        },
+      });
+  }
 
-      this.submitting = false;
-      this.form = { title: '', date: '', location: '', description: '' };
-      this.toastService.show('Upcoming event created.', 'success');
-    }, 500);
+  getGradient(index: number): readonly [string, string] {
+    return GRADIENT_PALETTE[index % GRADIENT_PALETTE.length];
+  }
+
+  formatDate(dateValue: string): string {
+    return dateValue ? formatDisplayDate(dateValue) : 'Date TBD';
   }
 
   /** Countdown badge shown on each event card, e.g. "Today", "Tomorrow", "12 days left". */
-  getCountdownLabel(event: UpcomingEvent): string {
-    if (!event.dateValue) {
+  getCountdownLabel(dateValue: string): string {
+    if (!dateValue) {
       return 'Date TBD';
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const target = new Date(event.dateValue);
+    const target = parseIsoDate(dateValue);
     target.setHours(0, 0, 0, 0);
 
     const diffDays = Math.round((target.getTime() - today.getTime()) / MS_PER_DAY);
@@ -115,17 +170,5 @@ export class UpcomingEventsComponent {
       return 'Next Month';
     }
     return `${diffDays} days left`;
-  }
-
-  private parseDateInput(value: string): Date {
-    const [year, month, day] = value.split('-').map(Number);
-    return new Date(year, month - 1, day);
-  }
-
-  private toIsoDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
   }
 }

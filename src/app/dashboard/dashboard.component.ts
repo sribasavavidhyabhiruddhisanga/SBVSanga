@@ -1,9 +1,15 @@
-import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from '../core/auth.service';
+import { ToastService } from '../core/toast.service';
+import { extractApiErrorMessage } from '../core/api-error.util';
+import { toIsoDate, formatDisplayDate } from '../core/date.util';
 import { HeroBannerComponent } from '../shared/hero-banner/hero-banner.component';
 import { SectionIntroComponent } from '../shared/section-intro/section-intro.component';
 import { ProfileCardComponent } from '../shared/profile-card/profile-card.component';
+import { UpcomingEventRecord, UpcomingEventsService } from '../updates/upcoming-events.service';
 
 interface MajorDonor {
   image: string;
@@ -18,14 +24,42 @@ interface SatvikaAwardee {
   description: string;
 }
 
+function latestUpcoming(events: UpcomingEventRecord[]): UpcomingEventRecord[] {
+  const todayIso = toIsoDate(new Date());
+
+  return [...events]
+    .filter((event) => !!event.date && event.date >= todayIso)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 6);
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterModule, HeroBannerComponent, SectionIntroComponent, ProfileCardComponent],
+  imports: [AsyncPipe, RouterModule, HeroBannerComponent, SectionIntroComponent, ProfileCardComponent],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
+  private readonly eventsService = inject(UpcomingEventsService);
+  private readonly toastService = inject(ToastService);
+
   constructor(public authService: AuthService) {}
+
+  /** Independent GET for the header announcements marquee — soonest-first upcoming events. */
+  readonly announcements$: Observable<UpcomingEventRecord[]> = this.eventsService.getEvents().pipe(
+    map((events) => latestUpcoming(events)),
+    catchError((error) => {
+      this.toastService.show(
+        extractApiErrorMessage(error, "Couldn't load the latest announcements."),
+        'error',
+      );
+      return of<UpcomingEventRecord[]>([]);
+    }),
+  );
+
+  formatEventDate(dateValue: string): string {
+    return dateValue ? formatDisplayDate(dateValue) : 'Date TBD';
+  }
 
   readonly majorDonors: MajorDonor[] = [
     {
@@ -52,7 +86,10 @@ export class DashboardComponent {
     { year: '2012', description: 'ಶ್ರೀಮತಿ ತ್ರಿವೇಣಿ ಶಿವಕುಮಾರ್ ರವರು' },
     { year: '2013', description: 'ಜಾನಪದ ವಿದ್ವಾಂಸ ಶ್ರೀ ಹೆಚ್..ವಿ. ವೀರಭದ್ರಯ್ಯನವರು' },
     { year: '2014', description: 'ಡಾ. ಜಿ. ವಿ. ಜಯಾ ರಾಜಶೇಖರ್ ಅವರು, ಲೇಖಕರು' },
-    { year: '2015', description: 'ನಾಡೋಜ ಡಾ.ಬಿ. ಟಿ. ರುದ್ರೇಶ್ ರವರು, ಖ್ಯಾತ ಹೋಮಿಯೋಪತಿ ವೈದ್ಯರು ಹಾಗೂ ಲೇಖಕರು' },
+    {
+      year: '2015',
+      description: 'ನಾಡೋಜ ಡಾ.ಬಿ. ಟಿ. ರುದ್ರೇಶ್ ರವರು, ಖ್ಯಾತ ಹೋಮಿಯೋಪತಿ ವೈದ್ಯರು ಹಾಗೂ ಲೇಖಕರು',
+    },
     { year: '2016', description: 'ಮಹಾಕಾವ್ಯಗಳ ಸರದಾರ ಡಾ. ಪ್ರದೀಪ್ ಕುಮಾರ್ ಹೆಬ್ರಿ, ಸಾಹಿತಿಗಳು' },
     { year: '2017', description: 'ಶ್ರೀ ಪೌಳಿ ಶಂಕರಾನಂದಪ್ಪ ಕವಿಗಳು ಹಾಗೂ ಲೇಖಕರು' },
     { year: '2018', description: 'ಶ್ರೀ ಹೆಚ್ . ಎಸ್. ಹಾಲೇಶ್, ಲೇಖಕರು' },
@@ -60,7 +97,8 @@ export class DashboardComponent {
     { year: '2020', description: 'ಶ್ರೀ ಬ್ಯಾಡನೂರು ಶಾಂತವೀರಪ್ಪನವರು, ಸಾಹಿತಿ' },
     {
       year: '2021',
-      description: 'ಡಾ. ಮಲಯ ಶಾಂತಮುನಿ, ದೇಶೀಕೇಂದ್ರ ಶಿವಾಚಾರ್ಯ ಸ್ವಾಮಿಗಳು, ಶಿವಗಂಗಾ ಕ್ಷೇತ್ರ , ಆಧ್ಯಾತ್ಮಿಕ ಲೇಖಕರು',
+      description:
+        'ಡಾ. ಮಲಯ ಶಾಂತಮುನಿ, ದೇಶೀಕೇಂದ್ರ ಶಿವಾಚಾರ್ಯ ಸ್ವಾಮಿಗಳು, ಶಿವಗಂಗಾ ಕ್ಷೇತ್ರ , ಆಧ್ಯಾತ್ಮಿಕ ಲೇಖಕರು',
     },
     { year: '2022', description: 'ಶತಾಯುಷಿ ಪ್ರೊ. ಸಿ. ಮಹಾದೇವಯ್ಯನವರು, ಹಿರಿಯ ಸಾಹಿತಿಗಳು' },
     {
@@ -69,7 +107,15 @@ export class DashboardComponent {
     },
     {
       year: '2024',
-      description: 'ಡಾ. ಸಿ . ನಾಗಭೂಷಣ ಪ್ರಾಧ್ಯಾಪಕರು , ಕನ್ನಡ ಅಧ್ಯಯನ ಕೇಂದ್ರ, ಬೆಂ. ವಿ. ವಿ',
+      description: 'ಡಾ. ಸಿ . ನಾಗಭೂಷಣ ಪ್ರಾಧ್ಯಾಪಕರು, ಕನ್ನಡ ಅಧ್ಯಯನ ಕೇಂದ್ರ, ಬೆಂ. ವಿ. ವಿ',
+    },
+    {
+      year: '2025',
+      description: 'ಡಾ. ಬಿ. ಸಿದ್ಧಲಿಂಗಸ್ವಾಮಿ (ಬಿ.ಎಸ್.ಸ್ವಾಮಿ) ಸಾಹಿತಿಗಳು, ಚಿಂತಕರು',
+    },
+    {
+      year: '2026',
+      description: 'ಡಾ. ಶಾಂತಾ ನಾಗರಾಜ್‌ರವರು ಖ್ಯಾತ ಲೇಖಕಿ ಹಾಗೂ ಪ್ರಾಧ್ಯಾಪಕರು',
     },
   ];
 }

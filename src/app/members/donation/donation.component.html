@@ -1,132 +1,174 @@
-<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  <app-page-header eyebrow="Members" title="Donation" />
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Our Community" title="Donate" />
 
-  <div class="mt-6 grid gap-6 lg:grid-cols-5">
-    <form
-      class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 lg:col-span-2"
-      (ngSubmit)="submitDonation()"
-    >
-      <h3 class="text-base font-semibold text-stone-900">Record a Donation</h3>
-      <p class="mt-1 text-sm text-stone-500">Add a new donation to keep the donor ledger up to date.</p>
+  <form
+    class="mt-6 rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 sm:p-8"
+    [formGroup]="form"
+    (ngSubmit)="openPaymentModal()"
+  >
+    <h3 class="text-base font-semibold text-stone-900">Record a Donation</h3>
+    <p class="mt-1 text-sm text-stone-500">Every rupee helps a student stay in school.</p>
 
-      <div
-        *ngIf="submitted"
-        class="mt-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700"
-      >
-        Donation recorded successfully.
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Donor Name</label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="e.g. Ramesh Kulkarni"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
       </div>
 
-      <div class="mt-5 space-y-4">
-        <div>
-          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Donor Name</label>
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Amount</label>
+        <div class="relative mt-1.5">
+          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">₹</span>
           <input
-            type="text"
-            name="donorName"
-            [(ngModel)]="form.donorName"
-            required
-            placeholder="e.g. Ramesh Kulkarni"
-            class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+            type="number"
+            formControlName="amount"
+            min="1"
+            placeholder="5000"
+            class="w-full rounded-xl border border-stone-200 py-2.5 pl-7 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
           />
         </div>
-
-        <div>
-          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Amount</label>
-          <div class="relative mt-1.5">
-            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-stone-400">₹</span>
-            <input
-              type="number"
-              name="amount"
-              [(ngModel)]="form.amount"
-              required
-              min="1"
-              placeholder="5000"
-              class="w-full rounded-xl border border-stone-200 py-2.5 pl-7 pr-3 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-            />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Date</label>
-            <input
-              type="date"
-              name="date"
-              [(ngModel)]="form.date"
-              required
-              class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-            />
-          </div>
-
-          <div>
-            <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Payment Mode</label>
-            <select
-              name="mode"
-              [(ngModel)]="form.mode"
-              class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-            >
-              <option *ngFor="let mode of paymentModes" [value]="mode">{{ mode }}</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Notes (optional)</label>
-          <textarea
-            name="notes"
-            [(ngModel)]="form.notes"
-            rows="3"
-            placeholder="Purpose or remarks"
-            class="mt-1.5 w-full resize-none rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
-          ></textarea>
-        </div>
       </div>
 
-      <button
-        type="submit"
-        [disabled]="submitting"
-        class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        <svg
-          *ngIf="submitting"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          class="h-4 w-4 animate-spin"
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Address</label>
+        <input
+          type="text"
+          formControlName="address"
+          placeholder="Village, Post, Taluk, District, Pincode"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Payment Mode</label>
+        <select
+          formControlName="paymentMode"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
         >
+          @for (mode of paymentModes; track mode) {
+            <option [value]="mode">{{ mode }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Donating For</label>
+        <select
+          formControlName="donationFor"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        >
+          <option value="" disabled>Select a purpose</option>
+          @for (option of donationForOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Notes</label>
+        <textarea
+          formControlName="notes"
+          rows="3"
+          placeholder="Purpose or remarks"
+          class="mt-1.5 w-full resize-none rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        ></textarea>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="form.invalid || preparingPayment"
+      class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (preparingPayment) {
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin">
           <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
           <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
         </svg>
-        {{ submitting ? 'Saving...' : 'Save Donation' }}
-      </button>
-    </form>
+      }
+      {{ preparingPayment ? 'Preparing...' : 'Save Donation' }}
+    </button>
+  </form>
+</div>
 
-    <div class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 lg:col-span-3">
-      <h3 class="text-base font-semibold text-stone-900">Recent Donations</h3>
+<!-- UPI QR modal -->
+@if (showQrModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-stone-900/60" (click)="cancelPayment()"></div>
 
-      <div class="mt-4 overflow-x-auto">
-        <table class="w-full min-w-[480px] text-left text-sm">
-          <thead>
-            <tr class="border-b border-stone-100 text-xs font-semibold uppercase tracking-wide text-stone-400">
-              <th class="py-3 pr-4">Donor</th>
-              <th class="py-3 pr-4">Amount</th>
-              <th class="py-3 pr-4">Date</th>
-              <th class="py-3 pr-4">Mode</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-stone-50">
-            <tr *ngFor="let donation of recentDonations" class="transition hover:bg-orange-50/40">
-              <td class="py-4 pr-4 font-semibold text-stone-900">{{ donation.donorName }}</td>
-              <td class="py-4 pr-4 text-stone-600">{{ donation.amount | currency: 'INR' : 'symbol' : '1.0-0' }}</td>
-              <td class="py-4 pr-4 text-stone-600">{{ donation.date }}</td>
-              <td class="py-4 pr-4">
-                <span class="inline-flex rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
-                  {{ donation.mode }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div
+      class="relative w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl sm:p-8"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 class="text-center text-lg font-bold text-stone-900">Scan & Pay via UPI</h3>
+      <p class="mt-1 text-center text-sm text-stone-500">Complete the payment, then confirm below.</p>
+
+      <div class="mx-auto mt-5 w-48 overflow-hidden rounded-2xl border border-stone-100 shadow-sm sm:w-56">
+        <img src="assets/images/upi_qrCode.jpg" alt="UPI QR Code" class="h-full w-full object-contain" />
+      </div>
+
+      <p class="mt-5 text-center text-base font-bold text-stone-900">UPI ID: sbvsangha&#64;sbi</p>
+
+      <div class="mt-6 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          (click)="cancelPayment()"
+          [disabled]="submitting"
+          class="rounded-full border border-stone-200 px-4 py-2.5 text-sm font-semibold text-stone-600 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="confirmPayment()"
+          [disabled]="submitting"
+          class="flex items-center justify-center gap-2 rounded-full bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          @if (submitting) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+              <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          }
+          {{ submitting ? 'Saving...' : 'Payment Complete' }}
+        </button>
       </div>
     </div>
   </div>
-</div>
+}
+
+<!-- Success alert -->
+@if (showSuccessAlert) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-stone-900/60"></div>
+
+    <div class="relative w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-2xl">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-7 w-7">
+          <path
+            d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10Zm-1.5-5.5-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+
+      <h3 class="mt-4 text-lg font-bold text-stone-900">Donation Recorded</h3>
+      <p class="mt-2 text-sm leading-relaxed text-stone-600">
+        Please call and inform the payment with the BVS Finance accountant.
+      </p>
+
+      <button
+        type="button"
+        (click)="dismissSuccessAlert()"
+        class="mt-6 w-full rounded-full bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98]"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+}

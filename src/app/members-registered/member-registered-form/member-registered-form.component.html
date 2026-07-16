@@ -1,0 +1,98 @@
+<div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+  <app-page-header eyebrow="Updates" title="Add Member">
+    <a
+      routerLink="/updates/members-registered"
+      class="inline-flex items-center gap-1.5 rounded-full border border-stone-200 px-4 py-2 text-sm font-semibold text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+        <path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      Back to Members Registered
+    </a>
+  </app-page-header>
+
+  <form
+    class="mt-6 rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 sm:p-8"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
+    <h3 class="text-base font-semibold text-stone-900">Register a New Member</h3>
+    <p class="mt-1 text-sm text-stone-500">All fields are required.</p>
+
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Name</label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="e.g. Dr. M. Testing"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Email ID</label>
+        <input
+          type="email"
+          formControlName="emailId"
+          placeholder="name@example.com"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Address</label>
+        <input
+          type="text"
+          formControlName="address"
+          placeholder="Village, Post, Taluk, District, Pincode"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Phone Number</label>
+        <input
+          type="tel"
+          formControlName="phone"
+          placeholder="e.g. 9876543210"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Referred By</label>
+        <input
+          type="text"
+          formControlName="referredBy"
+          placeholder="e.g. staff"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Date</label>
+        <input
+          type="date"
+          formControlName="date"
+          [min]="minDate"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="form.invalid || submitting"
+      class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (submitting) {
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+          <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        </svg>
+      }
+      {{ submitting ? 'Adding...' : 'Add Member' }}
+    </button>
+  </form>
+</div>

@@ -4,6 +4,7 @@
   <div class="mt-6 grid gap-6 lg:grid-cols-5">
     <form
       class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 lg:col-span-2"
+      [formGroup]="form"
       (ngSubmit)="createEvent()"
     >
       <h3 class="text-base font-semibold text-stone-900">Create Upcoming Event</h3>
@@ -14,9 +15,7 @@
           <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Event Title</label>
           <input
             type="text"
-            name="title"
-            [(ngModel)]="form.title"
-            required
+            formControlName="title"
             placeholder="e.g. Annual General Meeting"
             class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
           />
@@ -27,10 +26,8 @@
             <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Date</label>
             <input
               type="date"
-              name="date"
-              [(ngModel)]="form.date"
+              formControlName="date"
               [min]="minDate"
-              required
               class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
             />
           </div>
@@ -39,9 +36,7 @@
             <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Location</label>
             <input
               type="text"
-              name="location"
-              [(ngModel)]="form.location"
-              required
+              formControlName="location"
               placeholder="e.g. Community Hall"
               class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
             />
@@ -49,10 +44,9 @@
         </div>
 
         <div>
-          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Description (optional)</label>
+          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Description</label>
           <textarea
-            name="description"
-            [(ngModel)]="form.description"
+            formControlName="description"
             rows="3"
             placeholder="What should members expect?"
             class="mt-1.5 w-full resize-none rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
@@ -62,84 +56,93 @@
 
       <button
         type="submit"
-        [disabled]="submitting"
-        class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+        [disabled]="form.invalid || submitting"
+        class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <svg
-          *ngIf="submitting"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          class="h-4 w-4 animate-spin"
-        >
-          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
-          <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-        </svg>
+        @if (submitting) {
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        }
         {{ submitting ? 'Adding...' : 'Add Event' }}
       </button>
     </form>
 
     <div class="lg:col-span-3">
-      <div
-        class="rounded-3xl border border-dashed border-orange-200 bg-orange-50/60 px-5 py-3 text-sm text-orange-700"
-      >
-        Events added here are kept for this session only and are not yet persisted to a backend.
-      </div>
-
-      <div class="mt-6 grid gap-6 sm:grid-cols-2">
-        <div
-          *ngFor="let event of events"
-          class="group relative overflow-hidden rounded-3xl bg-white shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
-        >
-          <div class="relative h-[2.8rem] overflow-hidden">
-            <div
-              class="absolute inset-0 bg-gradient-to-br transition duration-300 group-hover:scale-110"
-              [ngClass]="[event.colorFrom, event.colorTo]"
-            ></div>
-            <span
-              class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-600 shadow-sm"
-            >
-              {{ getCountdownLabel(event) }}
-            </span>
+      @if (vm$ | async; as vm) {
+        @if (vm.error) {
+          <div class="rounded-3xl border border-dashed border-red-200 bg-red-50/60 px-5 py-3 text-sm text-red-700">
+            Couldn't load upcoming events right now.
           </div>
+        }
 
-          <div class="p-5">
-            <h4 class="text-base font-semibold text-stone-900">{{ event.title }}</h4>
-
-            <div class="mt-3 flex items-center gap-2 text-sm text-stone-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
-                <path
-                  d="M8 2v3m8-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              {{ event.date }}
-            </div>
-            <div class="mt-1.5 flex items-center gap-2 text-sm text-stone-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
-                <path
-                  d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="1.6" />
-              </svg>
-              {{ event.location }}
-            </div>
-
-            <p *ngIf="event.description" class="mt-3 text-sm text-stone-500">{{ event.description }}</p>
+        @if (vm.loading) {
+          <div class="grid gap-6 sm:grid-cols-2">
+            @for (skeleton of [0, 1]; track skeleton) {
+              <div class="h-48 animate-pulse rounded-3xl bg-white shadow-lg shadow-stone-200/60"></div>
+            }
           </div>
-        </div>
+        } @else if (vm.events.length > 0) {
+          <div class="grid gap-6 sm:grid-cols-2">
+            @for (event of vm.events; track event.title + event.date; let i = $index) {
+              <div
+                class="group relative overflow-hidden rounded-3xl bg-white shadow-lg shadow-stone-200/60 transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div class="relative h-[2.8rem] overflow-hidden">
+                  <div
+                    class="absolute inset-0 bg-gradient-to-br transition duration-300 group-hover:scale-110"
+                    [class]="getGradient(i)[0] + ' ' + getGradient(i)[1]"
+                  ></div>
+                  <span
+                    class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-600 shadow-sm"
+                  >
+                    {{ getCountdownLabel(event.date) }}
+                  </span>
+                </div>
 
-        <div *ngIf="events.length === 0" class="col-span-full py-16 text-center text-sm text-stone-400">
-          No upcoming events yet. Use the form to add one.
-        </div>
-      </div>
+                <div class="p-5">
+                  <h4 class="text-base font-semibold text-stone-900">{{ event.title }}</h4>
+
+                  <div class="mt-3 flex items-center gap-2 text-sm text-stone-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
+                      <path
+                        d="M8 2v3m8-3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    {{ formatDate(event.date) }}
+                  </div>
+                  <div class="mt-1.5 flex items-center gap-2 text-sm text-stone-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 shrink-0">
+                      <path
+                        d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <circle cx="12" cy="9.5" r="2.2" stroke="currentColor" stroke-width="1.6" />
+                    </svg>
+                    {{ event.location }}
+                  </div>
+
+                  @if (event.description) {
+                    <p class="mt-3 text-sm text-stone-500">{{ event.description }}</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="flex items-center justify-center py-20 text-center">
+            <p class="text-sm font-medium text-stone-400">No upcoming events scheduled</p>
+          </div>
+        }
+      }
     </div>
   </div>
 </div>

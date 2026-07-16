@@ -6,11 +6,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { DonorListComponent } from './members/donor-list/donor-list.component';
 import { DonationComponent } from './members/donation/donation.component';
+import { DonationListComponent } from './members/donation-list/donation-list.component';
 import { ScholarshipListComponent } from './scholar/scholarship-list/scholarship-list.component';
 import { ScholarshipApplyComponent } from './scholar/scholarship-apply/scholarship-apply.component';
 import { ScholarAppliedComponent } from './scholar/scholar-applied/scholar-applied.component';
 import { UpcomingEventsComponent } from './updates/upcoming-events/upcoming-events.component';
 import { GalleryComponent } from './gallery/gallery.component';
+import { MemberRegisteredListComponent } from './members-registered/member-registered-list/member-registered-list.component';
+import { MemberRegisteredFormComponent } from './members-registered/member-registered-form/member-registered-form.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -31,8 +34,18 @@ export const routes: Routes = [
 
       // "Updates" menu — Admin members only.
       { path: 'updates/scholar-applied', component: ScholarAppliedComponent, canActivate: [adminGuard] },
-      { path: 'updates/donation-list', component: DonationComponent, canActivate: [adminGuard] },
+      { path: 'updates/donation-list', component: DonationListComponent, canActivate: [adminGuard] },
       { path: 'updates/upcoming-events', component: UpcomingEventsComponent, canActivate: [adminGuard] },
+      {
+        path: 'updates/members-registered',
+        component: MemberRegisteredListComponent,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'updates/members-registered/add',
+        component: MemberRegisteredFormComponent,
+        canActivate: [adminGuard],
+      },
 
       { path: 'gallery', component: GalleryComponent },
     ],
