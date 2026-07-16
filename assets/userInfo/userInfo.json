@@ -13,13 +13,13 @@
     "emailId": "suhassanku@gmail.com",
     "userType": "Finance"
   },
-  // {
-  //   "id": "basava03",
-  //   "name": "Suhas Kumar",
-  //   "userName": "Suhas Java",
-  //   "emailId": "suhasjavaui@gmail.com",
-  //   "userType": "Member"
-  // },
+  {
+    "id": "basava03",
+    "name": "Suhas Kumar",
+    "userName": "Suhas Java",
+    "emailId": "suhasjavaui@gmail.com",
+    "userType": "Member"
+  },
   {
     "id": "basava04",
     "name": "Revathi",
