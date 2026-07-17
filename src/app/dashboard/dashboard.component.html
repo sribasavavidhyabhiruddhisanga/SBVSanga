@@ -1,8 +1,109 @@
-<div class="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
+<div
+  class="mx-auto max-w-7xl px-4 pb-16 pt-8 transition-opacity duration-200 sm:px-6 sm:pt-10"
+  [class.opacity-40]="isTranslating()"
+>
+  @if (authService.user; as user) {
+    <app-hero-banner [eyebrow]="t().heroEyebrow" [title]="t().heroTitle" [subtitle]="t().heroSubtitle">
+      <a
+        routerLink="/community/member-list"
+        class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+      >
+        {{ t().viewMembers }}
+      </a>
+      <a
+        routerLink="/community/scholarship-list"
+        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+      >
+        {{ t().scholarshipsBtn }}
+      </a>
+      <a
+        routerLink="/gallery"
+        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+      >
+        {{ t().galleryBtn }}
+      </a>
+    </app-hero-banner>
+
+    <!-- Overlapping profile stat strip -->
+    <section
+      class="relative z-10 -mt-8 grid gap-6 rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 sm:grid-cols-3 sm:divide-x sm:divide-stone-100 sm:p-8"
+    >
+      <div class="flex items-center gap-4">
+        <div
+          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <path
+              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">{{ t().signedInAs }}</p>
+          <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.username }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 sm:pl-6">
+        <div
+          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <path
+              d="M3 6h18v12H3V6Zm0 0 9 7 9-7"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">{{ t().emailLabel }}</p>
+          <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.emailId }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 sm:pl-6">
+        <div
+          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+            <path
+              d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">{{ t().signedInWith }}</p>
+          <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ t().googleLabel }}</p>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <app-hero-banner [eyebrow]="t().heroEyebrow" [title]="t().heroTitle" [subtitle]="t().heroSubtitle">
+      <a
+        routerLink="/login"
+        class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+      >
+        {{ t().membersLogin }}
+      </a>
+    </app-hero-banner>
+  }
+
+  <!-- Announcements marquee -->
   @if (announcements$ | async; as announcements) {
     @if (announcements.length > 0) {
       <div
-        class="mb-6 flex items-center overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 shadow-lg shadow-orange-900/10"
+        class="mt-6 flex items-center overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 shadow-lg shadow-orange-900/10"
       >
         <div
           class="flex shrink-0 items-center gap-2 bg-stone-900/15 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white sm:px-5"
@@ -16,7 +117,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          <span class="hidden sm:inline">Announcements</span>
+          <span class="hidden sm:inline">{{ t().announcementsLabel }}</span>
         </div>
 
         <div class="relative flex-1 overflow-hidden py-2.5">
@@ -53,111 +154,6 @@
     }
   }
 
-  @if (authService.user; as user) {
-    <app-hero-banner
-      eyebrow="Welcome"
-      title="ಶ್ರೀ ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ"
-      subtitle="ನಡೆದಾಡುವ ದೇವರು ಶ್ರೀ ಶ್ರೀ ಶ್ರೀ ಶಿವಕುಮಾರ ಮಹಾಸ್ವಾಮಿಗಳ ಕೃಪಾಶೀರ್ವಾದಗಳೊಂದಿಗೆ"
-    >
-      <a
-        routerLink="/community/member-list"
-        class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-      >
-        View Members
-      </a>
-      <a
-        routerLink="/community/scholarship-list"
-        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-      >
-        Scholarships
-      </a>
-      <a
-        routerLink="/gallery"
-        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-      >
-        Gallery
-      </a>
-    </app-hero-banner>
-
-    <!-- Overlapping profile stat strip -->
-    <section
-      class="relative z-10 -mt-8 grid gap-6 rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 sm:grid-cols-3 sm:divide-x sm:divide-stone-100 sm:p-8"
-    >
-      <div class="flex items-center gap-4">
-        <div
-          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-            <path
-              d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5Z"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-        <div class="min-w-0">
-          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Signed in as</p>
-          <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.username }}</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 sm:pl-6">
-        <div
-          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-            <path
-              d="M3 6h18v12H3V6Zm0 0 9 7 9-7"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-        <div class="min-w-0">
-          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Email</p>
-          <p class="mt-1 truncate text-lg font-bold text-stone-900">{{ user.emailId }}</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 sm:pl-6">
-        <div
-          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
-            <path
-              d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-        <div class="min-w-0">
-          <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Signed in with</p>
-          <p class="mt-1 truncate text-lg font-bold text-stone-900">Google</p>
-        </div>
-      </div>
-    </section>
-  } @else {
-    <app-hero-banner
-      eyebrow="Welcome"
-      title="ಶ್ರೀ ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘ"
-      subtitle="ನಡೆದಾಡುವ ದೇವರು ಶ್ರೀ ಶ್ರೀ ಶ್ರೀ ಶಿವಕುಮಾರ ಮಹಾಸ್ವಾಮಿಗಳ ಕೃಪಾಶೀರ್ವಾದಗಳೊಂದಿಗೆ"
-    >
-      <a
-        routerLink="/login"
-        class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-      >
-        Members Login
-      </a>
-    </app-hero-banner>
-  }
-
   <!-- About the Sangha -->
   <section class="mt-14">
     <div class="overflow-hidden rounded-3xl bg-white shadow-lg shadow-stone-200/60">
@@ -165,15 +161,9 @@
       <div
         class="grid grid-cols-3 gap-2 border-b border-stone-100 bg-orange-50/50 px-3 py-4 text-center sm:gap-4 sm:px-8"
       >
-        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">
-          IIಧರ್ಮದಿಂದಲೇ ವಿಶ್ವಕ್ಕೆ ಶಾಂತಿII
-        </p>
-        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">
-          IIಶಾಂತಿ - ಸಹಬಾಳ್ವೆ ಸರ್ವರಿಗಾಗಲಿII
-        </p>
-        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">
-          IIಮಾನವ ಧರ್ಮಕ್ಕೆ ಜಯವಾಗಲಿII
-        </p>
+        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">{{ t().motto1 }}</p>
+        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">{{ t().motto2 }}</p>
+        <p class="text-[11px] font-semibold text-orange-700 sm:text-sm">{{ t().motto3 }}</p>
       </div>
 
       <!-- Left 25% | Center 50% | Right 25% -->
@@ -208,12 +198,12 @@
             />
           </div>
           <p class="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-orange-600">
-            ಸ್ಥಾಪನೆ: 1981
+            {{ t().founded }}
           </p>
           <h3 class="mt-2 text-xl font-bold text-stone-900 sm:text-2xl">
-            ಶ್ರೀ ಬಸವ ವಿದ್ಯಾಭಿವೃದ್ದಿ ಸಂಘ
+            {{ t().orgName }}
           </h3>
-          <p class="mt-1 text-sm text-stone-500">46 ವರ್ಷಗಳ ಸಾರ್ಥಕ ಸೇವೆಯಲ್ಲಿ</p>
+          <p class="mt-1 text-sm text-stone-500">{{ t().yearsOfService }}</p>
         </div>
 
         <div class="flex justify-center">
@@ -236,26 +226,26 @@
 
       <!-- Footer tagline -->
       <div class="border-t border-stone-100 bg-stone-50 px-4 py-4 text-center sm:px-8">
-        <p class="text-sm font-medium text-stone-600">ಗ್ರಾಮೀಣ ಭಾಗದ ವಿದ್ಯಾರ್ಥಿಗಳ ಅಭ್ಯುದಯಕ್ಕಾಗಿ….</p>
+        <p class="text-sm font-medium text-stone-600">{{ t().aboutFooterTagline }}</p>
       </div>
     </div>
   </section>
 
   <!-- Our Legacy: founders & leadership -->
   <section class="mt-14">
-    <app-section-intro eyebrow="Our Legacy" title="The people who built this Sangha" />
+    <app-section-intro [eyebrow]="t().legacyEyebrow" [title]="t().legacyTitle" />
 
     <div class="mt-10 grid gap-6 lg:grid-cols-2">
       <app-profile-card
         image="assets/dashboardImages/hosalappa.jpg"
-        alt="ಸಂಸ್ಥಾಪಕ ಅಧ್ಯಕ್ಷರು ಶ್ರೀ ಹೊಸಳ್ಳಪ್ಪನವರು"
-        description="ಸಂಸ್ಥಾಪಕ ಅಧ್ಯಕ್ಷರು ಶ್ರೀ ಹೊಸಳ್ಳಪ್ಪನವರು, ನಿವೃತ್ತ ವ್ಯವಸ್ಥಾಪಕರು, ಕೃಷಿ ಇಲಾಖೆ, ಬೆಂಗಳೂರು.. ಇವರ ನೇತೃತ್ವದಲ್ಲಿ ಹಲವಾರು ಮಹನೀಯರು ಒಂದು ಮಹತ್ತರ ಧ್ಯೇಯದೊಂದಿಗೆ ಈ ಸಂಸ್ಥೆಯನ್ನು ಹುಟ್ಟು ಹಾಕಿದರು"
+        [alt]="t().hosalappaAlt"
+        [description]="t().hosalappaDesc"
         imagePosition="left"
       />
       <app-profile-card
         image="assets/dashboardImages/chandrashekar.jpg"
-        alt="ಜಸ್ಟಿಸ್ ಡಿ ಎಂ ಚಂದ್ರಶೇಖರ್"
-        description="ನಮ್ಮ ಸಂಘವನ್ನು ಮುಂದಿನ ಹಂತಕ್ಕೆ ತೆಗೆದುಕೊಂಡು ಹೋದವರು ಉಚ್ಚ ನ್ಯಾಯಾಲಯದ ನ್ಯಾಯಾಧೀಶರಾಗಿದ್ದ ಸರಳ ಸಜ್ಜನಿಕೆಯ ಸಾಕಾರ ಮೂರ್ತಿ ಕೀರ್ತಿಶೇಷ ಜಸ್ಟಿಸ್ ಡಿ ಎಂ ಚಂದ್ರಶೇರ್ ಅವರು"
+        [alt]="t().chandrashekarAlt"
+        [description]="t().chandrashekarDesc"
         imagePosition="right"
       />
     </div>
@@ -266,7 +256,7 @@
     <div class="relative overflow-hidden rounded-3xl shadow-lg shadow-stone-200/60">
       <img
         src="assets/dashboardImages/school.jpg"
-        alt="ಶಾಲಾ ಮಕ್ಕಳು"
+        [attr.alt]="t().schoolChildrenAlt"
         class="h-80 w-full object-cover sm:h-[26rem]"
       />
       <div
@@ -277,7 +267,7 @@
         class="absolute left-4 top-4 max-w-[13rem] rounded-2xl bg-white/90 p-4 shadow-xl sm:left-8 sm:top-8 sm:max-w-xs sm:p-5"
       >
         <p class="text-sm font-semibold leading-snug text-stone-900 sm:text-base">
-          ಮಕ್ಕಳ ಪ್ರತಿಭೆಗಳ ಅನ್ವೇಷಣೆ ಮತ್ತು ಪ್ರೋತ್ಸಾಹ
+          {{ t().impactCallout1 }}
         </p>
       </div>
 
@@ -285,7 +275,7 @@
         class="absolute bottom-4 right-4 max-w-[13rem] rounded-2xl bg-white/90 p-4 shadow-xl sm:bottom-8 sm:right-8 sm:max-w-xs sm:p-5"
       >
         <p class="text-sm font-semibold leading-snug text-stone-900 sm:text-base">
-          ಗ್ರಾಮೀಣ ಬಡ ಮಕ್ಕಳ ವಿದ್ಯಾಭ್ಯಾಸಕ್ಕೆ ಆರ್ಥಿಕ ಸಹಾಯ
+          {{ t().impactCallout2 }}
         </p>
       </div>
     </div>
@@ -295,9 +285,9 @@
   <section class="mt-14">
     <div class="rounded-3xl bg-white p-8 shadow-lg shadow-stone-200/60 sm:p-10">
       <div class="text-center">
-        <h3 class="text-2xl font-bold text-stone-900 sm:text-3xl">ದಾನಿಗಳೇ ನಮ್ಮ ಸಂಘದ ಆಧಾರ</h3>
+        <h3 class="text-2xl font-bold text-stone-900 sm:text-3xl">{{ t().majorDonorsTitle }}</h3>
         <p class="mt-2 text-sm text-stone-500 sm:text-base">
-          ಇವರಿಬ್ಬರು ₹ 10 ಲಕ್ಷ ದೇಣಿಗೆ ನೀಡಿರುವ ಮಹಾದಾನಿಗಳು
+          {{ t().majorDonorsSubtitle }}
         </p>
       </div>
 
@@ -309,18 +299,18 @@
             >
               <img
                 [src]="donor.image"
-                [alt]="donor.alt"
+                [alt]="donor.alt[language()]"
                 [style.object-position]="donor.objectPosition"
                 class="h-full w-full object-cover"
               />
             </div>
-            <p class="max-w-xs text-sm font-medium text-stone-600">{{ donor.caption }}</p>
+            <p class="max-w-xs text-sm font-medium text-stone-600">{{ donor.caption[language()] }}</p>
           </div>
         }
       </div>
       <div class="text-center">
         <p class="mt-6 text-sm text-stone-500 sm:text-base">
-          ಸಾವಿರಾರು ದಾನಿಗಳ ಹಣದಿಂದ ನಮ್ಮ ಸಂಘ ಸೇವೆಯನ್ನು ಮುಂದುವರೆಸಲು ಸಾಧ್ಯವಾಗಿದೆ
+          {{ t().majorDonorsFooter }}
         </p>
       </div>
     </div>
@@ -330,10 +320,9 @@
   <section class="mt-14">
     <div class="rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 sm:p-10">
       <div class="text-center">
-        <h3 class="text-2xl font-bold text-stone-900 sm:text-3xl">ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ</h3>
+        <h3 class="text-2xl font-bold text-stone-900 sm:text-3xl">{{ t().satvikaTitle }}</h3>
         <p class="mx-auto mt-3 max-w-2xl text-sm text-stone-500 sm:text-base">
-          ಎಲೆಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಕೃಷಿಯಲ್ಲಿ ತೊಡಗಿಸಿಕೊಂಡಿರುವ ಬಡ ಸಾಹಿತಿಗಳನ್ನು ಗುರುತಿಸಿ
-          ಸನ್ಮಾನಿಸಿ ಆರ್ಥಿಕ ನೆರವು ನೀಡುವ ಉದ್ದೇಶ
+          {{ t().satvikaSubtitle }}
         </p>
       </div>
 
@@ -355,8 +344,9 @@
             </div>
           </div>
           <p class="mt-5 max-w-sm text-sm leading-relaxed text-stone-600">
-            ಸಾಹಿತಿ ಶ್ರೀ. ಹೊ. ರಾ. ಸತ್ಯನಾರಾಯಣ ರಾವ್ ಅವರಿಗೆ 2008 ರಲ್ಲಿ ಮೊಟ್ಟ ಮೊದಲ ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ಮತ್ತು
-            ಸನ್ಮಾನ . ಹೆಸರಾಂತ ಸಾಹಿತಿಗಳಾದ ಡಾ! ದೊಡ್ಡ ರಂಗೇಗೌಡ ಹಾಗೂ ಸಾ. ಶಿ. ಮರುಳಯ್ಯನವರ ಉಪಸ್ತಿಯಲ್ಲಿ
+            {{ language() === 'kn'
+              ? 'ಸಾಹಿತಿ ಶ್ರೀ. ಹೊ. ರಾ. ಸತ್ಯನಾರಾಯಣ ರಾವ್ ಅವರಿಗೆ 2008 ರಲ್ಲಿ ಮೊಟ್ಟ ಮೊದಲ ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ಮತ್ತು ಸನ್ಮಾನ . ಹೆಸರಾಂತ ಸಾಹಿತಿಗಳಾದ ಡಾ! ದೊಡ್ಡ ರಂಗೇಗೌಡ ಹಾಗೂ ಸಾ. ಶಿ. ಮರುಳಯ್ಯನವರ ಉಪಸ್ತಿಯಲ್ಲಿ'
+              : 'Litterateur Sri Ho. Ra. Sathyanarayana Rao received the very first Satvika Prashasti and felicitation in 2008, in the presence of renowned writers Dr. Dodda Rangegowda and Sa. Shi. Marulayya.' }}
           </p>
         </div>
 
@@ -376,30 +366,23 @@
             </div>
           </div>
           <p class="mt-5 max-w-sm text-sm leading-relaxed text-stone-600">
-            ಕೀರ್ತಿಶೇಷ ಪ್ರೊ! ಟಿ ಆರ್ ಮಹಾದೇವಯ್ಯ
+            {{ language() === 'kn' ? 'ಕೀರ್ತಿಶೇಷ ಪ್ರೊ! ಟಿ ಆರ್ ಮಹಾದೇವಯ್ಯ' : 'Late Prof. T. R. Mahadevaiah' }}
           </p>
         </div>
       </div>
 
       <!-- History -->
       <div class="mx-auto mt-12 max-w-3xl border-t border-stone-100 pt-10">
-        <h4 class="text-center text-xl font-bold text-stone-900 sm:text-2xl">ಸಾತ್ವಿಕ ಪ್ರಸಕ್ತಿ</h4>
+        <h4 class="text-center text-xl font-bold text-stone-900 sm:text-2xl">{{ t().satvikaHistoryTitle }}</h4>
         <p class="mt-4 text-sm leading-relaxed text-stone-600 sm:text-base">
-          ಕನ್ನಡ ಪ್ರಾಧ್ಯಾಪಕರಾಗಿ, ಕನ್ನಡ ನಿಘಂಟುಕಾರರಾಗಿ, ಸರಳ ವ್ಯಕ್ತಿತ್ವಕ್ಕೆ ಹೆಸರಾದ ಪೋ.
-          ಟಿ.ಆರ್.ಮಹಾದೇವಯ್ಯನವರಿಗೆ ಅವರ ಶಿಷ್ಯರು, ಮಿತ್ರರು, ಅಭಿಮಾನಿಗಳು 1995ರಲ್ಲಿ ಅವರ ಷಷ್ಠಿ ಸಂದರ್ಭದಲ್ಲಿ
-          ಅಭಿನಂದನಾ ಸಮಾರಂಭ ಏರ್ಪಡಿಸಿ ಒಂದು ಲಕ್ಷ ರುಪಾಯಿಗಳ ನಿಧಿಯನ್ನು ಅರ್ಪಿಸಿದರು. ಶ್ರೀಯುತರು ಈ ಹಣವನ್ನು
-          ಸ್ವಂತಕ್ಕೆ ಬಳಸದೆ ಬೆಳೆಸಿ 2 ಲಕ್ಷ ರುಪಾಯಿಗಳ ಪುದುವಟ್ಟನ್ನು ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನಿಧಿ ಎಂದು ಶ್ರೀ ಬಸವ
-          ವಿಧ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘದಲ್ಲಿಟ್ಟಿದ್ದಾರೆ. ಮುಂದುವರೆದು ಅವರ ಹಿತೈಷಿಗಳು, ಸಾಹಿತಿಗಳು ಮತ್ತು ಬಂಧು -
-          ಮಿತ್ರರು ಕೈ ಜೋಡಿಸಿ ಒಟ್ಟು ಐದು ಲಕ್ಷ ಸಂಗ್ರಹಿಸಿದ್ದಾರೆ. ಅದರಲ್ಲಿ ಬರುವ ಬಡ್ಡಿಯಲ್ಲಿ ಶ್ರೀ ಟಿ ಆರ್ ಎಂ
-          ಅವರ ಆಶಯದಂತೆ ಪ್ರತಿ ವರ್ಷ ಎಲೆ ಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಸೇವೆ ಮಾಡುತ್ತಿರುವ ಹಾಗೂ ಆರ್ಥಿಕವಾಗಿ
-          ಸಂಕಷ್ಟದಲ್ಲಿರುವ ಸಜ್ಜನ ಸಾಹಿತಿಯೊಬ್ಬರಿಗೆ ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನೀಡಿ ಸನ್ಮಾನಿಸಲಾಗುತ್ತಿದೆ.
+          {{ t().satvikaHistoryText }}
         </p>
       </div>
 
       <!-- Honorees roll call -->
       <div class="mt-12 border-t border-stone-100 pt-10">
         <h4 class="text-center text-xl font-bold text-stone-900 sm:text-2xl">
-          ಇವರೆಲ್ಲರೂ ಈ ಪ್ರಶಸ್ತಿಗೆ ಭಾಜನರಾದ ಗೌರವಾನ್ವಿತ ವ್ಯಕ್ತಿಗಳು
+          {{ t().satvikaRollCallTitle }}
         </h4>
 
         <div class="mt-8 grid gap-3 sm:grid-cols-2">
@@ -412,7 +395,7 @@
               >
                 {{ awardee.year }}
               </span>
-              <p class="pt-1.5 text-sm leading-snug text-stone-700">{{ awardee.description }}</p>
+              <p class="pt-1.5 text-sm leading-snug text-stone-700">{{ awardee.description[language()] }}</p>
             </div>
           }
         </div>

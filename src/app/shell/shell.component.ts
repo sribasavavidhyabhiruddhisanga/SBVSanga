@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../core/auth.service';
+import { LanguageService } from '../core/language.service';
 
 type DesktopMenu = 'community' | 'updates' | null;
 type MobileGroup = 'community' | 'updates';
@@ -23,6 +24,8 @@ export class ShellComponent implements OnInit {
   mobileCommunityOpen = false;
   mobileUpdatesOpen = false;
   openDesktopMenu: DesktopMenu = null;
+
+  readonly languageService = inject(LanguageService);
 
   constructor(
     public authService: AuthService,
@@ -70,6 +73,10 @@ export class ShellComponent implements OnInit {
     } else {
       this.mobileUpdatesOpen = !this.mobileUpdatesOpen;
     }
+  }
+
+  isDashboardRoute(): boolean {
+    return this.router.url === '/dashboard' || this.router.url.startsWith('/dashboard?');
   }
 
   isCommunityActive(): boolean {

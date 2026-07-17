@@ -178,6 +178,40 @@
 
       <!-- Right side: user menu / login (desktop) + burger (mobile) -->
       <div class="flex items-center gap-2">
+        @if (isDashboardRoute()) {
+          <div
+            class="relative flex h-9 shrink-0 animate-fade-in items-center rounded-full bg-stone-100 p-1 text-xs font-semibold"
+            role="group"
+            aria-label="Dashboard language"
+          >
+            <span
+              class="absolute inset-y-1 left-1 w-[3.25rem] rounded-full bg-white shadow-sm transition-transform duration-300 ease-out"
+              [class.translate-x-0]="languageService.language() === 'kn'"
+              [class.translate-x-[3.25rem]]="languageService.language() === 'en'"
+            ></span>
+            <button
+              type="button"
+              (click)="languageService.set('kn')"
+              class="relative z-10 w-[3.25rem] rounded-full py-1 text-center transition-colors"
+              [class.text-orange-700]="languageService.language() === 'kn'"
+              [class.text-stone-400]="languageService.language() === 'en'"
+              [attr.aria-pressed]="languageService.language() === 'kn'"
+            >
+              ಕನ್ನಡ
+            </button>
+            <button
+              type="button"
+              (click)="languageService.set('en')"
+              class="relative z-10 w-[3.25rem] rounded-full py-1 text-center transition-colors"
+              [class.text-orange-700]="languageService.language() === 'en'"
+              [class.text-stone-400]="languageService.language() === 'kn'"
+              [attr.aria-pressed]="languageService.language() === 'en'"
+            >
+              EN
+            </button>
+          </div>
+        }
+
         <div class="hidden lg:block">
           @if (authService.user; as user) {
             <div class="relative animate-fade-in">

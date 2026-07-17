@@ -3,6 +3,8 @@ import { Component, inject } from '@angular/core';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
+import { ToastService } from '../../core/toast.service';
+import { extractApiErrorMessage } from '../../core/api-error.util';
 import { DonorRecord, DonorService } from '../donor.service';
 
 interface DonorListViewModel {
@@ -26,6 +28,7 @@ const LOADING_VM: DonorListViewModel = { loading: true, error: false, donors: []
 })
 export class DonorListComponent {
   private readonly donorService = inject(DonorService);
+  private readonly toastService = inject(ToastService);
 
   readonly columns: DataTableColumn[] = [
     { header: 'Donor', key: 'name' },
@@ -36,6 +39,9 @@ export class DonorListComponent {
   readonly vm$: Observable<DonorListViewModel> = this.donorService.getDonors().pipe(
     map((donors): DonorListViewModel => ({ loading: false, error: false, donors })),
     startWith(LOADING_VM),
-    catchError(() => of<DonorListViewModel>({ loading: false, error: true, donors: [] })),
+    catchError((error) => {
+      this.toastService.show(extractApiErrorMessage(error, "Couldn't load donors right now."), 'error');
+      return of<DonorListViewModel>({ loading: false, error: true, donors: [] });
+    }),
   );
 }

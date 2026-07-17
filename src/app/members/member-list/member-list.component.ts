@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, combineLatest, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
+import { ToastService } from '../../core/toast.service';
+import { extractApiErrorMessage } from '../../core/api-error.util';
 import { MemberRecord, MemberService } from '../member.service';
 
 type StatusFilter = 'All' | 'Active' | 'Inactive';
@@ -30,6 +32,7 @@ interface MemberListViewModel {
 })
 export class MemberListComponent {
   private readonly memberService = inject(MemberService);
+  private readonly toastService = inject(ToastService);
   private readonly statusFilterSubject = new BehaviorSubject<StatusFilter>('All');
 
   get statusFilter(): StatusFilter {
@@ -56,7 +59,10 @@ export class MemberListComponent {
   ];
 
   private readonly members$: Observable<MemberRecord[] | 'error'> = this.memberService.getMembers().pipe(
-    catchError(() => of<'error'>('error')),
+    catchError((error) => {
+      this.toastService.show(extractApiErrorMessage(error, "Couldn't load members right now."), 'error');
+      return of<'error'>('error');
+    }),
   );
 
   readonly vm$: Observable<MemberListViewModel> = combineLatest([

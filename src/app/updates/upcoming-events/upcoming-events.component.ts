@@ -49,6 +49,7 @@ export class UpcomingEventsComponent implements OnInit {
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
   submitting = false;
+  deletingEventId: string | null = null;
   readonly minDate = toIsoDate(new Date());
 
   readonly form = this.fb.group({
@@ -97,16 +98,21 @@ export class UpcomingEventsComponent implements OnInit {
 
     this.submitting = true;
     const value = this.form.getRawValue();
-    const payload: UpcomingEventRecord = {
-      title: value.title ?? '',
-      date: value.date ?? '',
-      location: value.location ?? '',
-      description: value.description ?? '',
-    };
 
     this.eventsService
       .getEvents()
-      .pipe(switchMap((existing) => this.eventsService.createEvent([...existing, payload])))
+      .pipe(
+        switchMap((existing) => {
+          const payload: UpcomingEventRecord = {
+            eventId: this.eventsService.nextEventId(existing),
+            title: value.title ?? '',
+            date: value.date ?? '',
+            location: value.location ?? '',
+            description: value.description ?? '',
+          };
+          return this.eventsService.createEvent([...existing, payload]);
+        }),
+      )
       .subscribe({
         next: () => {
           this.submitting = false;
@@ -124,6 +130,31 @@ export class UpcomingEventsComponent implements OnInit {
           this.cdr.markForCheck();
         },
       });
+  }
+
+  deleteEvent(event: UpcomingEventRecord): void {
+    if (this.deletingEventId) {
+      return;
+    }
+
+    this.deletingEventId = event.eventId;
+
+    this.eventsService.deleteEvent(event.eventId).subscribe({
+      next: () => {
+        this.deletingEventId = null;
+        this.toastService.show('Event deleted.', 'success');
+        this.refresh$.next();
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        this.deletingEventId = null;
+        this.toastService.show(
+          extractApiErrorMessage(error, 'Could not delete the event. Please try again.'),
+          'error',
+        );
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   getGradient(index: number): readonly [string, string] {

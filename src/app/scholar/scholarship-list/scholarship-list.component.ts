@@ -3,6 +3,8 @@ import { Component, inject } from '@angular/core';
 import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
+import { ToastService } from '../../core/toast.service';
+import { extractApiErrorMessage } from '../../core/api-error.util';
 import { ScholarshipRow, ScholarshipService } from '../scholarship.service';
 
 interface ScholarshipListViewModel {
@@ -28,6 +30,7 @@ const LOADING_VM: ScholarshipListViewModel = { loading: true, error: false, scho
 })
 export class ScholarshipListComponent {
   private readonly scholarshipService = inject(ScholarshipService);
+  private readonly toastService = inject(ToastService);
 
   readonly columns: DataTableColumn[] = [
     { header: 'Scholarship', key: 'studentName', secondaryKey: 'email', type: 'two-line' },
@@ -39,6 +42,12 @@ export class ScholarshipListComponent {
   readonly vm$: Observable<ScholarshipListViewModel> = this.scholarshipService.getScholarships().pipe(
     map((scholarships): ScholarshipListViewModel => ({ loading: false, error: false, scholarships })),
     startWith(LOADING_VM),
-    catchError(() => of<ScholarshipListViewModel>({ loading: false, error: true, scholarships: [] })),
+    catchError((error) => {
+      this.toastService.show(
+        extractApiErrorMessage(error, "Couldn't load scholarship records right now."),
+        'error',
+      );
+      return of<ScholarshipListViewModel>({ loading: false, error: true, scholarships: [] });
+    }),
   );
 }

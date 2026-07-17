@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { API_BASE_URL } from '../core/api-base';
 
 /** Raw shape of a record in the remote scholarship applicants API. */
 export interface ScholarshipApiRecord {
@@ -23,14 +24,16 @@ export interface ScholarshipRow {
 
 @Injectable({ providedIn: 'root' })
 export class ScholarshipService {
-  private readonly apiUrl =
-    'https://raw.githubusercontent.com/sribasavavidhyabhiruddhisanga/API/refs/heads/main/scholarship_list.json';
+  private readonly apiUrl = `${API_BASE_URL}/data/scholarship_list.json`;
 
   constructor(private http: HttpClient) {}
 
   getScholarships(): Observable<ScholarshipRow[]> {
-    return this.http.get<ScholarshipApiRecord[]>(this.apiUrl).pipe(
-      map((records) => records.map((record) => this.toRow(record))),
+    return this.http.get<ScholarshipApiRecord[] | ScholarshipApiRecord | null>(this.apiUrl).pipe(
+      map((body) => {
+        const records = Array.isArray(body) ? body : body ? [body] : [];
+        return records.map((record) => this.toRow(record));
+      }),
     );
   }
 
