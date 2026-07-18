@@ -62,6 +62,14 @@ interface DashboardStrings {
   majorDonorsTitle: string;
   majorDonorsSubtitle: string;
   majorDonorsFooter: string;
+  rankaEyebrow: string;
+  rankaTitle: string;
+  rankaSubtitle: string;
+  rankaBody: string;
+  rankaYearsBadge: string;
+  rankaStudentsBadge: string;
+  rankaThanks: string;
+  rankaAlt: string;
   satvikaTitle: string;
   satvikaSubtitle: string;
   satvikaHistoryTitle: string;
@@ -103,10 +111,19 @@ const KN_STRINGS: DashboardStrings = {
   majorDonorsTitle: 'ದಾನಿಗಳೇ ನಮ್ಮ ಸಂಘದ ಆಧಾರ',
   majorDonorsSubtitle: 'ಇವರಿಬ್ಬರು ₹ 10 ಲಕ್ಷ ದೇಣಿಗೆ ನೀಡಿರುವ ಮಹಾದಾನಿಗಳು',
   majorDonorsFooter: 'ಸಾವಿರಾರು ದಾನಿಗಳ ಹಣದಿಂದ ನಮ್ಮ ಸಂಘ ಸೇವೆಯನ್ನು ಮುಂದುವರೆಸಲು ಸಾಧ್ಯವಾಗಿದೆ',
+  rankaEyebrow: 'ಕೃತಜ್ಞತೆ',
+  rankaTitle: 'ಶ್ರೀ ಬಾಬುಲಾಲ್ ರಂಕಾ ಅವರಿಗೆ ಹೃತ್ಪೂರ್ವಕ ಕೃತಜ್ಞತೆಗಳು',
+  rankaSubtitle: 'ರಂಕಾ ಸೆಂಟರ್ — ಡಿ. ಆರ್. ರಂಕಾ ಚಾರಿಟೆಬಲ್ ಟ್ರಸ್ಟ್, ಜಯನಗರ, ಬೆಂಗಳೂರು',
+  rankaBody:
+    "ಜಯನಗರ, ಬೆಂಗಳೂರಿನಲ್ಲಿ 'ಡಿ. ಆರ್. ರಂಕಾ ಚಾರಿಟೆಬಲ್ ಟ್ರಸ್ಟ್' ಅಡಿಯಲ್ಲಿ 'ರಂಕಾ ಸೆಂಟರ್' ಅನ್ನು ನಡೆಸುತ್ತಿರುವ ಶ್ರೀ ಬಾಬುಲಾಲ್ ರಂಕಾ ಅವರು ಕಳೆದ 15 ವರ್ಷಗಳಿಂದ ನಿರಂತರವಾಗಿ, ಪ್ರತಿ ವರ್ಷ ಸುಮಾರು 25 ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ವಿದ್ಯಾರ್ಥಿವೇತನ ನೀಡುವ ಮೂಲಕ ನಮ್ಮ ಸಂಘದ ಸೇವಾಕಾರ್ಯಕ್ಕೆ ಅಪಾರ ಕೊಡುಗೆ ನೀಡುತ್ತಿದ್ದಾರೆ. ಅವರ ಈ ಅವಿರತ ಔದಾರ್ಯ ಮತ್ತು ಶಿಕ್ಷಣ ಪ್ರೀತಿಗೆ ನಾವು ಚಿರಋಣಿಗಳಾಗಿದ್ದೇವೆ. ಅವರ ಸೇವೆ ಗ್ರಾಮೀಣ ಬಡ ಮಕ್ಕಳ ಬದುಕಿನಲ್ಲಿ ಶಾಶ್ವತ ಬೆಳಕಾಗಿ ಉಳಿಯುತ್ತದೆ.",
+  rankaYearsBadge: '15+ ವರ್ಷಗಳ ಸೇವೆ',
+  rankaStudentsBadge: 'ವರ್ಷಕ್ಕೆ ~25 ವಿದ್ಯಾರ್ಥಿಗಳು',
+  rankaThanks: 'ತಮ್ಮ ಔದಾರ್ಯ ಮತ್ತು ಬದ್ಧತೆಗೆ ಅನಂತ ಧನ್ಯವಾದಗಳು.',
+  rankaAlt: 'ಶ್ರೀ ಬಾಬುಲಾಲ್ ರಂಕಾ',
   satvikaTitle: 'ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ',
   satvikaSubtitle:
     'ಎಲೆಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಕೃಷಿಯಲ್ಲಿ ತೊಡಗಿಸಿಕೊಂಡಿರುವ ಬಡ ಸಾಹಿತಿಗಳನ್ನು ಗುರುತಿಸಿ ಸನ್ಮಾನಿಸಿ ಆರ್ಥಿಕ ನೆರವು ನೀಡುವ ಉದ್ದೇಶ',
-  satvikaHistoryTitle: 'ಸಾತ್ವಿಕ ಪ್ರಸಕ್ತಿ',
+  satvikaHistoryTitle: 'ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ',
   satvikaHistoryText:
     'ಕನ್ನಡ ಪ್ರಾಧ್ಯಾಪಕರಾಗಿ, ಕನ್ನಡ ನಿಘಂಟುಕಾರರಾಗಿ, ಸರಳ ವ್ಯಕ್ತಿತ್ವಕ್ಕೆ ಹೆಸರಾದ ಪೋ. ಟಿ.ಆರ್.ಮಹಾದೇವಯ್ಯನವರಿಗೆ ಅವರ ಶಿಷ್ಯರು, ಮಿತ್ರರು, ಅಭಿಮಾನಿಗಳು 1995ರಲ್ಲಿ ಅವರ ಷಷ್ಠಿ ಸಂದರ್ಭದಲ್ಲಿ ಅಭಿನಂದನಾ ಸಮಾರಂಭ ಏರ್ಪಡಿಸಿ ಒಂದು ಲಕ್ಷ ರುಪಾಯಿಗಳ ನಿಧಿಯನ್ನು ಅರ್ಪಿಸಿದರು. ಶ್ರೀಯುತರು ಈ ಹಣವನ್ನು ಸ್ವಂತಕ್ಕೆ ಬಳಸದೆ ಬೆಳೆಸಿ 2 ಲಕ್ಷ ರುಪಾಯಿಗಳ ಪುದುವಟ್ಟನ್ನು ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನಿಧಿ ಎಂದು ಶ್ರೀ ಬಸವ ವಿಧ್ಯಾಭಿವೃದ್ಧಿ ಸಂಘದಲ್ಲಿಟ್ಟಿದ್ದಾರೆ. ಮುಂದುವರೆದು ಅವರ ಹಿತೈಷಿಗಳು, ಸಾಹಿತಿಗಳು ಮತ್ತು ಬಂಧು - ಮಿತ್ರರು ಕೈ ಜೋಡಿಸಿ ಒಟ್ಟು ಐದು ಲಕ್ಷ ಸಂಗ್ರಹಿಸಿದ್ದಾರೆ. ಅದರಲ್ಲಿ ಬರುವ ಬಡ್ಡಿಯಲ್ಲಿ ಶ್ರೀ ಟಿ ಆರ್ ಎಂ ಅವರ ಆಶಯದಂತೆ ಪ್ರತಿ ವರ್ಷ ಎಲೆ ಮರೆಯ ಕಾಯಿಯಂತೆ ಕನ್ನಡ ಸಾಹಿತ್ಯ ಸೇವೆ ಮಾಡುತ್ತಿರುವ ಹಾಗೂ ಆರ್ಥಿಕವಾಗಿ ಸಂಕಷ್ಟದಲ್ಲಿರುವ ಸಜ್ಜನ ಸಾಹಿತಿಯೊಬ್ಬರಿಗೆ ಸಾತ್ವಿಕ ಪ್ರಶಸ್ತಿ ನೀಡಿ ಸನ್ಮಾನಿಸಲಾಗುತ್ತಿದೆ.',
   satvikaRollCallTitle: 'ಇವರೆಲ್ಲರೂ ಈ ಪ್ರಶಸ್ತಿಗೆ ಭಾಜನರಾದ ಗೌರವಾನ್ವಿತ ವ್ಯಕ್ತಿಗಳು',
@@ -147,10 +164,19 @@ const EN_STRINGS: DashboardStrings = {
   majorDonorsSubtitle: 'These two great benefactors have each donated ₹10 lakh',
   majorDonorsFooter:
     'It is with the contributions of thousands of donors that our Sangha is able to continue its service',
+  rankaEyebrow: 'Gratitude',
+  rankaTitle: 'Heartfelt Thanks to Sri Babulal Ranka',
+  rankaSubtitle: 'Ranka Center — D. R. Ranka Charitable Trust, Jayanagar, Bengaluru',
+  rankaBody:
+    'Sri Babulal Ranka, who runs the Ranka Center under the D. R. Ranka Charitable Trust in Jayanagar, Bengaluru, has been an extraordinary pillar of support for our Sangha — continuously sponsoring scholarships for about 25 students every single year for the past 15 years. We remain deeply grateful for his unwavering generosity and his abiding love for education. His service will forever remain a guiding light in the lives of underprivileged rural children.',
+  rankaYearsBadge: '15+ Years of Service',
+  rankaStudentsBadge: '~25 Students Every Year',
+  rankaThanks: 'With our deepest thanks for your generosity and commitment.',
+  rankaAlt: 'Sri Babulal Ranka',
   satvikaTitle: 'Satvika Prashasti',
   satvikaSubtitle:
     'An initiative to identify, honour, and financially support underprivileged litterateurs who quietly cultivate Kannada literature, like the unseen fruit behind the leaf',
-  satvikaHistoryTitle: 'Satvika Prasakti',
+  satvikaHistoryTitle: 'Satvika Prashasti',
   satvikaHistoryText:
     "Prof. T. R. Mahadevaiah — a Kannada professor, lexicographer, and a man renowned for his simplicity — was honoured by his students, friends, and admirers with a felicitation ceremony in 1995 to mark his 60th birthday (Shashti), at which they presented him a fund of one lakh rupees. Rather than using this money for himself, he grew it into a corpus of two lakh rupees and deposited it with Sri Basava Vidyabhivruddhi Sangha as the Satvika Prashasti fund. His well-wishers, fellow writers, and relatives and friends subsequently joined hands to raise a total of five lakh rupees. In keeping with Sri T. R. M.'s wish, the interest earned from this corpus is used every year to honour a gracious litterateur who, like the unseen fruit behind the leaf, quietly serves Kannada literature while facing financial hardship, with the Satvika Prashasti.",
   satvikaRollCallTitle: 'These Are the Esteemed Recipients of This Award',
@@ -168,7 +194,13 @@ function latestUpcoming(events: UpcomingEventRecord[]): UpcomingEventRecord[] {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AsyncPipe, RouterModule, HeroBannerComponent, SectionIntroComponent, ProfileCardComponent],
+  imports: [
+    AsyncPipe,
+    RouterModule,
+    HeroBannerComponent,
+    SectionIntroComponent,
+    ProfileCardComponent,
+  ],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {

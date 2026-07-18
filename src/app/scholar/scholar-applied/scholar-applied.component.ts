@@ -202,16 +202,17 @@ export class ScholarAppliedComponent implements OnInit {
 
     this.downloadingKey = key;
 
-    this.mediaService.getDownloadUrl(key).subscribe({
-      next: (url) => {
+    this.mediaService.downloadFile(key).subscribe({
+      next: (blob) => {
         this.downloadingKey = null;
+        const objectUrl = URL.createObjectURL(blob);
         const anchor = document.createElement('a');
-        anchor.href = url;
+        anchor.href = objectUrl;
         anchor.download = key.split('/').pop() ?? 'document';
-        anchor.rel = 'noopener';
         document.body.appendChild(anchor);
         anchor.click();
         anchor.remove();
+        URL.revokeObjectURL(objectUrl);
         this.cdr.markForCheck();
       },
       error: (error) => {

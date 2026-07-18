@@ -47,4 +47,14 @@ export class MediaService {
       .get<DownloadUrlResponse>(`${this.mediaUrl}/download-url`, { params: { key } })
       .pipe(map((response) => response.downloadUrl));
   }
+
+  /**
+   * Fetches a stored S3 object as a Blob via a fresh presigned URL. A plain `<a download>` only
+   * forces a "Save As" for same-origin URLs — since S3 is a different origin, browsers ignore
+   * the `download` attribute there and just navigate to it. Fetching the bytes first lets the
+   * caller build a same-origin `blob:` URL that a real download link will honor.
+   */
+  downloadFile(key: string): Observable<Blob> {
+    return this.getDownloadUrl(key).pipe(switchMap((url) => this.http.get(url, { responseType: 'blob' })));
+  }
 }
