@@ -1,45 +1,81 @@
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  <app-page-header eyebrow="Media" title="Gallery" />
-
-  <div class="mt-6 flex flex-wrap gap-2">
-    <button
-      *ngFor="let category of categories"
-      type="button"
-      (click)="setCategory(category)"
-      class="rounded-full px-4 py-2 text-sm font-medium transition"
-      [class.bg-orange-600]="activeCategory === category"
-      [class.text-white]="activeCategory === category"
-      [class.bg-white]="activeCategory !== category"
-      [class.text-stone-600]="activeCategory !== category"
-      [class.shadow-sm]="activeCategory !== category"
-      [class.hover:bg-orange-50]="activeCategory !== category"
+  <app-page-header eyebrow="Media" title="Gallery">
+    <a
+      [href]="albumUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-1.5 rounded-full border border-stone-200 px-4 py-2 text-sm font-semibold text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
     >
-      {{ category }}
-    </button>
-  </div>
+      Full Album on Google Photos
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3.5 w-3.5">
+        <path d="M7 17 17 7M17 7H9m8 0v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </app-page-header>
 
-  <div *ngIf="loading" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-    <div *ngFor="let row of [1, 2, 3, 4, 5, 6, 7, 8]" class="aspect-square animate-pulse rounded-3xl bg-stone-100"></div>
-  </div>
-
-  <div *ngIf="!loading" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-    <div
-      *ngFor="let item of filteredItems"
-      class="group relative aspect-square overflow-hidden rounded-3xl shadow-lg shadow-stone-200/60"
-    >
-      <div
-        class="absolute inset-0 bg-gradient-to-br transition duration-300 group-hover:scale-110"
-        [ngClass]="[item.colorFrom, item.colorTo]"
-      ></div>
-      <div class="absolute inset-0 bg-black/10 transition duration-300 group-hover:bg-black/30"></div>
-      <div class="absolute inset-x-0 bottom-0 p-4">
-        <p class="text-sm font-semibold text-white">{{ item.title }}</p>
-        <p class="text-xs text-white/80">{{ item.date }}</p>
-      </div>
+  @if (!loading && !error && tiles.length > 0) {
+    <div class="mt-6 flex flex-wrap gap-2">
+      @for (category of categories; track category) {
+        <button
+          type="button"
+          (click)="setCategory(category)"
+          class="rounded-full px-4 py-2 text-sm font-medium transition"
+          [class.bg-orange-600]="activeCategory === category"
+          [class.text-white]="activeCategory === category"
+          [class.bg-white]="activeCategory !== category"
+          [class.text-stone-600]="activeCategory !== category"
+          [class.shadow-sm]="activeCategory !== category"
+          [class.hover:bg-orange-50]="activeCategory !== category"
+        >
+          {{ category }}
+        </button>
+      }
     </div>
+  }
 
-    <div *ngIf="filteredItems.length === 0" class="col-span-full py-16 text-center text-sm text-stone-400">
-      No gallery items in this category yet.
+  @if (loading) {
+    <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      @for (row of [1, 2, 3, 4, 5, 6, 7, 8]; track row) {
+        <div class="aspect-square animate-pulse rounded-3xl bg-stone-100"></div>
+      }
     </div>
-  </div>
+  } @else if (error) {
+    <div class="mt-6 rounded-3xl border border-dashed border-red-200 bg-red-50/60 px-5 py-3 text-sm text-red-700">
+      Couldn't load the gallery right now.
+    </div>
+  } @else if (tiles.length === 0) {
+    <div class="mt-6 flex flex-col items-center rounded-3xl bg-white p-10 text-center shadow-lg shadow-stone-200/60">
+      <p class="text-sm font-medium text-stone-400">No photos here yet.</p>
+      <a
+        [href]="albumUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-4 inline-flex items-center gap-2 rounded-full bg-orange-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
+      >
+        Browse the Full Album
+      </a>
+    </div>
+  } @else {
+    <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      @for (tile of filteredTiles; track tile.id) {
+        <div class="group relative aspect-square overflow-hidden rounded-3xl bg-stone-100 shadow-lg shadow-stone-200/60">
+          <img
+            [src]="tile.url"
+            [alt]="tile.title"
+            loading="lazy"
+            class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-110"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 transition duration-300 group-hover:from-black/70"></div>
+          <div class="absolute inset-x-0 bottom-0 p-4">
+            <p class="text-sm font-semibold text-white">{{ tile.title }}</p>
+            <p class="text-xs text-white/80">{{ tile.date }}</p>
+          </div>
+        </div>
+      }
+
+      @if (filteredTiles.length === 0) {
+        <div class="col-span-full py-16 text-center text-sm text-stone-400">No photos in this category yet.</div>
+      }
+    </div>
+  }
 </div>

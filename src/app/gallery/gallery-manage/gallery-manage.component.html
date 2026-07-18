@@ -1,0 +1,109 @@
+<div class="relative mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10">
+  @if (submitting) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-10 w-10 animate-spin text-orange-600">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+        <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+    </div>
+  }
+
+  <app-page-header eyebrow="Updates" title="Manage Gallery">
+    <a
+      routerLink="/gallery"
+      class="inline-flex items-center gap-1.5 rounded-full border border-stone-200 px-4 py-2 text-sm font-semibold text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+        <path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      View Gallery
+    </a>
+  </app-page-header>
+
+  <form
+    class="mt-6 rounded-3xl bg-white p-6 shadow-lg shadow-stone-200/60 sm:p-8"
+    [formGroup]="form"
+    (ngSubmit)="uploadImage()"
+  >
+    <h3 class="text-base font-semibold text-stone-900">Add a Photo</h3>
+    <p class="mt-1 text-sm text-stone-500">Uploaded photos appear immediately on the public Gallery page.</p>
+
+    <div class="mt-5 space-y-4">
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Title</label>
+        <input
+          type="text"
+          formControlName="title"
+          placeholder="e.g. Annual General Meeting"
+          class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Category</label>
+          <select
+            formControlName="category"
+            class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+          >
+            <option value="" disabled>Select a category</option>
+            @for (category of categories; track category) {
+              <option [value]="category">{{ category }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Date</label>
+          <input
+            type="date"
+            formControlName="date"
+            [max]="minDate"
+            class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Photo</label>
+        <div class="mt-1.5 flex items-center justify-center rounded-xl border-2 border-dashed border-stone-200 px-4 py-8 text-center transition hover:border-orange-300">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="mx-auto h-8 w-8 text-stone-400">
+              <path
+                d="M12 16V4m0 0 4 4m-4-4-4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p class="mt-2 text-sm text-stone-500">Click to browse — JPG, JPEG, PNG, or WEBP only, max 5MB</p>
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp"
+              (change)="onFileSelected($event)"
+              class="mt-3 block w-full text-xs text-stone-500 file:mr-3 file:rounded-full file:border-0 file:bg-orange-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-orange-700 hover:file:bg-orange-100"
+            />
+            @if (selectedFile) {
+              <p class="mt-2 text-xs font-medium text-emerald-600">Selected: {{ selectedFile.name }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="form.invalid || submitting"
+      class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      @if (submitting) {
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+          <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        </svg>
+      }
+      {{ submitting ? 'Uploading...' : 'Add Photo' }}
+    </button>
+  </form>
+</div>

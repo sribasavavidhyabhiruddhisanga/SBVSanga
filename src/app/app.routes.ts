@@ -14,6 +14,7 @@ import { UpcomingEventsComponent } from './updates/upcoming-events/upcoming-even
 import { GalleryComponent } from './gallery/gallery.component';
 import { MemberRegisteredListComponent } from './members-registered/member-registered-list/member-registered-list.component';
 import { MemberRegisteredFormComponent } from './members-registered/member-registered-form/member-registered-form.component';
+import { GalleryManageComponent } from './gallery/gallery-manage/gallery-manage.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -46,6 +47,7 @@ export const routes: Routes = [
         component: MemberRegisteredFormComponent,
         canActivate: [adminGuard],
       },
+      { path: 'updates/gallery-manage', component: GalleryManageComponent, canActivate: [adminGuard] },
 
       { path: 'gallery', component: GalleryComponent },
     ],
