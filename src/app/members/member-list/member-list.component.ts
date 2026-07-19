@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, catchError, combineLatest, map, of, startW
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
+import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
 import { MemberRecord, MemberService } from '../member.service';
 
@@ -33,6 +34,7 @@ interface MemberListViewModel {
 export class MemberListComponent {
   private readonly memberService = inject(MemberService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
   private readonly statusFilterSubject = new BehaviorSubject<StatusFilter>('All');
 
   get statusFilter(): StatusFilter {
@@ -43,7 +45,7 @@ export class MemberListComponent {
     this.statusFilterSubject.next(value);
   }
 
-  readonly columns: DataTableColumn[] = [
+  private readonly allColumns: DataTableColumn[] = [
     { header: 'Member', key: 'name' },
     { header: 'Member ID', key: 'memberId' },
     { header: 'Address', key: 'address' },
@@ -57,6 +59,13 @@ export class MemberListComponent {
       },
     },
   ];
+
+  /** Address is only shown to signed-in members — hidden from the public/logged-out view. */
+  get columns(): DataTableColumn[] {
+    return this.authService.isLoggedIn
+      ? this.allColumns
+      : this.allColumns.filter((column) => column.key !== 'address');
+  }
 
   private readonly members$: Observable<MemberRecord[] | 'error'> = this.memberService.getMembers().pipe(
     catchError((error) => {

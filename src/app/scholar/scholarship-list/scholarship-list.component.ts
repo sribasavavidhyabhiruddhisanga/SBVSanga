@@ -4,6 +4,7 @@ import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
+import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
 import { ScholarshipRow, ScholarshipService } from '../scholarship.service';
 
@@ -31,13 +32,21 @@ const LOADING_VM: ScholarshipListViewModel = { loading: true, error: false, scho
 export class ScholarshipListComponent {
   private readonly scholarshipService = inject(ScholarshipService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
 
-  readonly columns: DataTableColumn[] = [
+  private readonly allColumns: DataTableColumn[] = [
     { header: 'Scholarship', key: 'studentName', secondaryKey: 'email', type: 'two-line' },
     { header: 'Parent and Occupation', key: 'parentAndOccupation' },
     { header: 'Address', key: 'address' },
     { header: 'Phone Number', key: 'phoneNumber' },
   ];
+
+  /** Address and phone are only shown to signed-in members — hidden from the public/logged-out view. */
+  get columns(): DataTableColumn[] {
+    return this.authService.isLoggedIn
+      ? this.allColumns
+      : this.allColumns.filter((column) => column.key !== 'address' && column.key !== 'phoneNumber');
+  }
 
   readonly vm$: Observable<ScholarshipListViewModel> = this.scholarshipService.getScholarships().pipe(
     map((scholarships): ScholarshipListViewModel => ({ loading: false, error: false, scholarships })),

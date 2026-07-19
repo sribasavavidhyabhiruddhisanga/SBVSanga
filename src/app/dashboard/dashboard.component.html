@@ -2,28 +2,28 @@
   class="mx-auto max-w-7xl px-4 pb-16 pt-8 transition-opacity duration-200 sm:px-6 sm:pt-10"
   [class.opacity-40]="isTranslating()"
 >
-  @if (authService.user; as user) {
-    <app-hero-banner [eyebrow]="t().heroEyebrow" [title]="t().heroTitle" [subtitle]="t().heroSubtitle">
-      <a
-        routerLink="/community/member-list"
-        class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-      >
-        {{ t().viewMembers }}
-      </a>
-      <a
-        routerLink="/community/scholarship-list"
-        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-      >
-        {{ t().scholarshipsBtn }}
-      </a>
-      <a
-        routerLink="/gallery"
-        class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
-      >
-        {{ t().galleryBtn }}
-      </a>
-    </app-hero-banner>
+  <app-hero-banner [eyebrow]="t().heroEyebrow" [title]="t().heroTitle" [subtitle]="t().heroSubtitle">
+    <a
+      routerLink="/community/member-list"
+      class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
+    >
+      {{ t().viewMembers }}
+    </a>
+    <a
+      routerLink="/community/scholarship-list"
+      class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+    >
+      {{ t().scholarshipsBtn }}
+    </a>
+    <a
+      routerLink="/gallery"
+      class="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition hover:bg-white/20 active:scale-[0.98]"
+    >
+      {{ t().galleryBtn }}
+    </a>
+  </app-hero-banner>
 
+  @if (authService.user; as user) {
     <!-- Overlapping profile stat strip -->
     <section
       class="relative z-10 -mt-8 grid gap-6 rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 sm:grid-cols-3 sm:divide-x sm:divide-stone-100 sm:p-8"
@@ -88,15 +88,6 @@
         </div>
       </div>
     </section>
-  } @else {
-    <app-hero-banner [eyebrow]="t().heroEyebrow" [title]="t().heroTitle" [subtitle]="t().heroSubtitle">
-      <a
-        routerLink="/login"
-        class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-orange-800 shadow-lg transition hover:bg-orange-50 active:scale-[0.98]"
-      >
-        {{ t().membersLogin }}
-      </a>
-    </app-hero-banner>
   }
 
   <!-- Announcements marquee -->

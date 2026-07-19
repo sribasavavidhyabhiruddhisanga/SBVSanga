@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { forkJoin, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { ToastService } from '../../core/toast.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
@@ -31,7 +31,7 @@ export class GalleryManageComponent {
   private readonly cdr = inject(ChangeDetectorRef);
 
   submitting = false;
-  selectedFile: File | null = null;
+  selectedFiles: File[] = [];
 
   readonly categories = ['Meetings', 'Scholarships', 'Community', 'Cultural'];
   readonly minDate = toIsoDate(new Date());
@@ -42,75 +42,86 @@ export class GalleryManageComponent {
     date: [this.minDate, Validators.required],
   });
 
-  onFileSelected(event: Event): void {
+  onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
+    const files = input.files ? Array.from(input.files) : [];
 
-    if (!file) {
-      this.selectedFile = null;
+    if (files.length === 0) {
+      this.selectedFiles = [];
       return;
     }
 
-    const extension = `.${(file.name.split('.').pop() ?? '').toLowerCase()}`;
+    const valid: File[] = [];
+    let anyRejected = false;
 
-    if (!ALLOWED_EXTENSIONS.includes(extension)) {
-      this.toastService.show('Only JPG, JPEG, PNG, or WEBP images are allowed.', 'error');
-      this.selectedFile = null;
-      input.value = '';
-      return;
+    for (const file of files) {
+      const extension = `.${(file.name.split('.').pop() ?? '').toLowerCase()}`;
+
+      if (!ALLOWED_EXTENSIONS.includes(extension) || file.size > MAX_FILE_SIZE_BYTES) {
+        anyRejected = true;
+        continue;
+      }
+
+      valid.push(file);
     }
 
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      this.toastService.show('Image is too large — the maximum allowed size is 5MB.', 'error');
-      this.selectedFile = null;
-      input.value = '';
-      return;
+    if (anyRejected) {
+      this.toastService.show(
+        'Some files were skipped — only JPG, JPEG, PNG, or WEBP under 5MB are allowed.',
+        'error',
+      );
     }
 
-    this.selectedFile = file;
+    this.selectedFiles = valid;
   }
 
-  uploadImage(): void {
+  uploadImages(): void {
     if (this.form.invalid || this.submitting) {
       return;
     }
 
-    if (!this.selectedFile) {
-      this.toastService.show('Please choose a photo to upload.', 'error');
+    if (this.selectedFiles.length === 0) {
+      this.toastService.show('Please choose at least one photo to upload.', 'error');
       return;
     }
 
     this.submitting = true;
     const formValue = this.form.getRawValue();
 
-    this.mediaService.uploadFile(this.selectedFile).subscribe({
-      next: ({ key }) => {
+    forkJoin(this.selectedFiles.map((file) => this.mediaService.uploadFile(file))).subscribe({
+      next: (uploads) => {
         this.galleryService
           .getImages()
           .pipe(
             switchMap((existing) => {
-              const payload: GalleryImage = {
-                id: this.galleryService.nextImageId(existing),
-                key,
-                title: formValue.title,
-                category: formValue.category,
-                date: formValue.date,
-              };
-              return this.galleryService.createImage([...existing, payload]);
+              let working = existing;
+              const newRecords: GalleryImage[] = uploads.map(({ key }) => {
+                const record: GalleryImage = {
+                  id: this.galleryService.nextImageId(working),
+                  key,
+                  title: formValue.title,
+                  category: formValue.category,
+                  date: formValue.date,
+                };
+                working = [...working, record];
+                return record;
+              });
+              return this.galleryService.createImage(working);
             }),
           )
           .subscribe({
             next: () => {
               this.submitting = false;
-              this.toastService.show('Photo added to the gallery.', 'success');
+              const count = uploads.length;
+              this.toastService.show(`${count} photo${count > 1 ? 's' : ''} added to the gallery.`, 'success');
               this.form.reset({ title: '', category: '', date: this.minDate });
-              this.selectedFile = null;
+              this.selectedFiles = [];
               this.cdr.markForCheck();
             },
             error: (error) => {
               this.submitting = false;
               this.toastService.show(
-                extractApiErrorMessage(error, 'Could not save the photo. Please try again.'),
+                extractApiErrorMessage(error, 'Could not save the photos. Please try again.'),
                 'error',
               );
               this.cdr.markForCheck();
@@ -120,7 +131,7 @@ export class GalleryManageComponent {
       error: (error) => {
         this.submitting = false;
         this.toastService.show(
-          extractApiErrorMessage(error, 'Could not upload the photo. Please try again.'),
+          extractApiErrorMessage(error, 'Could not upload the photos. Please try again.'),
           'error',
         );
         this.cdr.markForCheck();

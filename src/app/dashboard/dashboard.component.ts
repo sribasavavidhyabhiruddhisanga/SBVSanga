@@ -37,7 +37,6 @@ interface DashboardStrings {
   viewMembers: string;
   scholarshipsBtn: string;
   galleryBtn: string;
-  membersLogin: string;
   signedInAs: string;
   emailLabel: string;
   signedInWith: string;
@@ -84,7 +83,6 @@ const KN_STRINGS: DashboardStrings = {
   viewMembers: 'ಸದಸ್ಯರನ್ನು ವೀಕ್ಷಿಸಿ',
   scholarshipsBtn: 'ವಿದ್ಯಾರ್ಥಿವೇತನಗಳು',
   galleryBtn: 'ಗ್ಯಾಲರಿ',
-  membersLogin: 'ಸದಸ್ಯರ ಲಾಗಿನ್',
   signedInAs: 'ಸೈನ್ ಇನ್ ಆಗಿರುವವರು',
   emailLabel: 'ಇಮೇಲ್',
   signedInWith: 'ಇದರ ಮೂಲಕ ಸೈನ್ ಇನ್',
@@ -136,7 +134,6 @@ const EN_STRINGS: DashboardStrings = {
   viewMembers: 'View Members',
   scholarshipsBtn: 'Scholarships',
   galleryBtn: 'Gallery',
-  membersLogin: 'Members Login',
   signedInAs: 'Signed in as',
   emailLabel: 'Email',
   signedInWith: 'Signed in with',

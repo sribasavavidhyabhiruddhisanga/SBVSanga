@@ -4,6 +4,7 @@ import { Observable, catchError, map, of, startWith } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
+import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
 import { DonorRecord, DonorService } from '../donor.service';
 
@@ -29,12 +30,20 @@ const LOADING_VM: DonorListViewModel = { loading: true, error: false, donors: []
 export class DonorListComponent {
   private readonly donorService = inject(DonorService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
 
-  readonly columns: DataTableColumn[] = [
+  private readonly allColumns: DataTableColumn[] = [
     { header: 'Donor', key: 'name' },
     { header: 'Donor ID', key: 'donarId' },
     { header: 'Address', key: 'address' },
   ];
+
+  /** Address is only shown to signed-in members — hidden from the public/logged-out view. */
+  get columns(): DataTableColumn[] {
+    return this.authService.isLoggedIn
+      ? this.allColumns
+      : this.allColumns.filter((column) => column.key !== 'address');
+  }
 
   readonly vm$: Observable<DonorListViewModel> = this.donorService.getDonors().pipe(
     map((donors): DonorListViewModel => ({ loading: false, error: false, donors })),
