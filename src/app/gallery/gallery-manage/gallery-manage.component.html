@@ -27,8 +27,8 @@
   >
     <h3 class="text-base font-semibold text-stone-900">Add Photos</h3>
     <p class="mt-1 text-sm text-stone-500">
-      Select one or more photos — the title, category, and date below are applied to all of them. Uploaded photos
-      appear immediately on the public Gallery page.
+      Select one or more photos — the title, year, and date below are applied to all of them. The year determines
+      which S3 folder the photos are stored in. Uploaded photos appear immediately on the public Gallery page.
     </p>
 
     <div class="mt-5 space-y-4">
@@ -44,12 +44,12 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Category</label>
+          <label class="text-xs font-medium uppercase tracking-wide text-stone-500">Year</label>
           <select
             formControlName="category"
             class="mt-1.5 w-full rounded-xl border border-stone-200 px-3 py-2.5 text-sm text-stone-700 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
           >
-            <option value="" disabled>Select a category</option>
+            <option value="" disabled>Select a year</option>
             @for (category of categories; track category) {
               <option [value]="category">{{ category }}</option>
             }

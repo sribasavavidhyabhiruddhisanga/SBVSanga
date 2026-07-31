@@ -1,5 +1,5 @@
 <div class="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  @if (loading) {
+  @if (loading || tilesLoading) {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-10 w-10 animate-spin text-orange-600">
         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
@@ -15,20 +15,20 @@
       rel="noopener noreferrer"
       class="inline-flex items-center gap-1.5 rounded-full border border-stone-200 px-4 py-2 text-sm font-semibold text-stone-600 transition hover:bg-orange-50 hover:text-orange-700"
     >
-      Full Album on Google Photos
+      {{ activeCategory }} Album on Google Photos
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3.5 w-3.5">
         <path d="M7 17 17 7M17 7H9m8 0v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </a>
   </app-page-header>
 
-  @if (!loading && !error && tiles.length > 0) {
+  @if (!loading && !error) {
     <div class="mt-6 flex flex-wrap gap-2">
       @for (category of categories; track category) {
         <button
           type="button"
           (click)="setCategory(category)"
-          class="rounded-full px-4 py-2 text-sm font-medium transition"
+          class="rounded-full px-5 py-2 text-sm font-semibold transition"
           [class.bg-orange-600]="activeCategory === category"
           [class.text-white]="activeCategory === category"
           [class.bg-white]="activeCategory !== category"
@@ -47,21 +47,21 @@
       <div class="mt-6 rounded-3xl border border-dashed border-red-200 bg-red-50/60 px-5 py-3 text-sm text-red-700">
         Couldn't load the gallery right now.
       </div>
-    } @else if (tiles.length === 0) {
+    } @else if (!tilesLoading && tiles.length === 0) {
       <div class="mt-6 flex flex-col items-center rounded-3xl bg-white p-10 text-center shadow-lg shadow-stone-200/60">
-        <p class="text-sm font-medium text-stone-400">No photos here yet.</p>
+        <p class="text-sm font-medium text-stone-400">No {{ activeCategory }} photos here yet.</p>
         <a
           [href]="albumUrl"
           target="_blank"
           rel="noopener noreferrer"
           class="mt-4 inline-flex items-center gap-2 rounded-full bg-orange-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
         >
-          Browse the Full Album
+          Browse the {{ activeCategory }} Album
         </a>
       </div>
-    } @else {
+    } @else if (!tilesLoading) {
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        @for (tile of filteredTiles; track tile.id) {
+        @for (tile of tiles; track tile.id) {
           <div class="group relative aspect-square overflow-hidden rounded-3xl bg-stone-100 shadow-lg shadow-stone-200/60">
             <img
               [src]="tile.url"
@@ -75,10 +75,6 @@
               <p class="text-xs text-white/80">{{ tile.date }}</p>
             </div>
           </div>
-        }
-
-        @if (filteredTiles.length === 0) {
-          <div class="col-span-full py-16 text-center text-sm text-stone-400">No photos in this category yet.</div>
         }
       </div>
     }

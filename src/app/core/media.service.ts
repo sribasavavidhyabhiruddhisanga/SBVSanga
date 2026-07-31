@@ -24,12 +24,21 @@ export class MediaService {
    * signed for a PUT, not a GET — it cannot be reused later to view/download the file. Store
    * `key` for that; re-derive a fresh URL via `getDownloadUrl()` whenever the file needs to be
    * opened or downloaded again.
+   *
+   * `folder` becomes the S3 key prefix (e.g. "2025" -> `2025/<uuid>-<fileName>`); the presign
+   * Lambda defaults to "uploads" when omitted.
    */
-  uploadFile(file: File): Observable<UploadUrlResponse> {
+  uploadFile(file: File, folder?: string): Observable<UploadUrlResponse> {
+    const params: Record<string, string> = {
+      fileName: file.name,
+      contentType: file.type || 'application/octet-stream',
+    };
+    if (folder) {
+      params['folder'] = folder;
+    }
+
     return this.http
-      .get<UploadUrlResponse>(`${this.mediaUrl}/upload-url`, {
-        params: { fileName: file.name, contentType: file.type || 'application/octet-stream' },
-      })
+      .get<UploadUrlResponse>(`${this.mediaUrl}/upload-url`, { params })
       .pipe(
         switchMap((response) =>
           this.http

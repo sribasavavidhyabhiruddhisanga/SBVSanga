@@ -33,7 +33,7 @@ export class GalleryManageComponent {
   submitting = false;
   selectedFiles: File[] = [];
 
-  readonly categories = ['Meetings', 'Scholarships', 'Community', 'Cultural'];
+  readonly categories = ['2025', '2026'];
   readonly minDate = toIsoDate(new Date());
 
   readonly form = this.fb.nonNullable.group({
@@ -88,7 +88,7 @@ export class GalleryManageComponent {
     this.submitting = true;
     const formValue = this.form.getRawValue();
 
-    forkJoin(this.selectedFiles.map((file) => this.mediaService.uploadFile(file))).subscribe({
+    forkJoin(this.selectedFiles.map((file) => this.mediaService.uploadFile(file, formValue.category))).subscribe({
       next: (uploads) => {
         this.galleryService
           .getImages()
