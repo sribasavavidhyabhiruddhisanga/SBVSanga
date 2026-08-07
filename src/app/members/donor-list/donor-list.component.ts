@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Observable, catchError, map, of, startWith, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
 import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
+import { exportTableToPdf } from '../../core/pdf-export.util';
 import { DonorRecord, DonorService } from '../donor.service';
 
 interface DonorListViewModel {
@@ -30,7 +31,7 @@ const LOADING_VM: DonorListViewModel = { loading: true, error: false, donors: []
 export class DonorListComponent {
   private readonly donorService = inject(DonorService);
   private readonly toastService = inject(ToastService);
-  private readonly authService = inject(AuthService);
+  readonly authService = inject(AuthService);
 
   private readonly allColumns: DataTableColumn[] = [
     { header: 'Donor', key: 'name' },
@@ -45,6 +46,9 @@ export class DonorListComponent {
       : this.allColumns.filter((column) => column.key !== 'address');
   }
 
+  /** Last successfully-loaded roster — kept for the PDF export, which runs outside the template. */
+  private latestDonors: DonorRecord[] = [];
+
   readonly vm$: Observable<DonorListViewModel> = this.donorService.getDonors().pipe(
     map((donors): DonorListViewModel => ({ loading: false, error: false, donors })),
     startWith(LOADING_VM),
@@ -52,5 +56,15 @@ export class DonorListComponent {
       this.toastService.show(extractApiErrorMessage(error, "Couldn't load donors right now."), 'error');
       return of<DonorListViewModel>({ loading: false, error: true, donors: [] });
     }),
+    tap((vm) => (this.latestDonors = vm.donors)),
   );
+
+  downloadPdf(): void {
+    exportTableToPdf({
+      subtitle: 'Donor List',
+      columns: this.columns.map((column) => ({ header: column.header, key: column.key })),
+      rows: this.latestDonors,
+      fileName: 'donor-list',
+    });
+  }
 }

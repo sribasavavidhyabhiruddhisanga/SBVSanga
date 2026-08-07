@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, Observable, catchError, combineLatest, map, of, startWith } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, combineLatest, map, of, startWith, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
 import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
+import { exportTableToPdf } from '../../core/pdf-export.util';
 import { MemberRecord, MemberService } from '../member.service';
 
 type StatusFilter = 'All' | 'Active' | 'Inactive';
@@ -34,7 +35,7 @@ interface MemberListViewModel {
 export class MemberListComponent {
   private readonly memberService = inject(MemberService);
   private readonly toastService = inject(ToastService);
-  private readonly authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private readonly statusFilterSubject = new BehaviorSubject<StatusFilter>('All');
 
   get statusFilter(): StatusFilter {
@@ -74,6 +75,9 @@ export class MemberListComponent {
     }),
   );
 
+  /** Last successfully-loaded, currently-filtered roster — kept for the PDF export, which runs outside the template. */
+  private latestMembers: MemberRecord[] = [];
+
   readonly vm$: Observable<MemberListViewModel> = combineLatest([
     this.members$.pipe(startWith(undefined)),
     this.statusFilterSubject,
@@ -91,5 +95,15 @@ export class MemberListComponent {
 
       return { loading: false, error: false, members: filtered };
     }),
+    tap((vm) => (this.latestMembers = vm.members)),
   );
+
+  downloadPdf(): void {
+    exportTableToPdf({
+      subtitle: 'Member List',
+      columns: this.columns.map((column) => ({ header: column.header, key: column.key })),
+      rows: this.latestMembers,
+      fileName: 'member-list',
+    });
+  }
 }

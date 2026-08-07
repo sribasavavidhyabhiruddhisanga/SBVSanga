@@ -1,11 +1,12 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { ToastService } from '../../core/toast.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
 import { MediaService } from '../../core/media.service';
+import { PdfColumn, exportTableToPdf } from '../../core/pdf-export.util';
 import {
   ScholarshipApplication,
   ScholarshipDocLink,
@@ -89,6 +90,9 @@ export class ScholarAppliedComponent implements OnInit {
     ),
   );
 
+  /** Last successfully-loaded (unfiltered) roster — kept for the PDF export, which runs outside the template. */
+  private latestApplications: ScholarshipApplication[] = [];
+
   readonly vm$: Observable<ScholarAppliedViewModel> = this.applications$.pipe(
     startWith(undefined),
     map((applications): ScholarAppliedViewModel => {
@@ -100,6 +104,7 @@ export class ScholarAppliedComponent implements OnInit {
       }
       return { loading: false, error: false, applications };
     }),
+    tap((vm) => (this.latestApplications = vm.applications)),
   );
 
   ngOnInit(): void {
@@ -135,6 +140,20 @@ export class ScholarAppliedComponent implements OnInit {
 
   documentKey(application: ScholarshipApplication): string {
     return (application.docLink as ScholarshipDocLink)?.key ?? '';
+  }
+
+  /** Exports every data column (independent of the on-screen column toggle) except `docLink`, which isn't printable. */
+  downloadPdf(): void {
+    const pdfColumns: PdfColumn[] = this.columns
+      .filter((column) => column.key !== 'docLink')
+      .map((column) => ({ header: column.header, key: column.key }));
+
+    exportTableToPdf({
+      subtitle: 'Scholarship Applications',
+      columns: pdfColumns,
+      rows: this.filterApplications(this.latestApplications),
+      fileName: 'scholarship-applications',
+    });
   }
 
   setStatus(application: ScholarshipApplication, status: 'Accept' | 'Reject'): void {

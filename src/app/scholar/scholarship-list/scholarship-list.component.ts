@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Observable, catchError, map, of, startWith, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
 import { AuthService } from '../../core/auth.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
+import { PdfColumn, exportTableToPdf } from '../../core/pdf-export.util';
 import { ScholarshipRow, ScholarshipService } from '../scholarship.service';
 
 interface ScholarshipListViewModel {
@@ -32,7 +33,7 @@ const LOADING_VM: ScholarshipListViewModel = { loading: true, error: false, scho
 export class ScholarshipListComponent {
   private readonly scholarshipService = inject(ScholarshipService);
   private readonly toastService = inject(ToastService);
-  private readonly authService = inject(AuthService);
+  readonly authService = inject(AuthService);
 
   private readonly allColumns: DataTableColumn[] = [
     { header: 'Scholarship', key: 'studentName', secondaryKey: 'email', type: 'two-line' },
@@ -48,6 +49,9 @@ export class ScholarshipListComponent {
       : this.allColumns.filter((column) => column.key !== 'address' && column.key !== 'phoneNumber');
   }
 
+  /** Last successfully-loaded roster — kept for the PDF export, which runs outside the template. */
+  private latestScholarships: ScholarshipRow[] = [];
+
   readonly vm$: Observable<ScholarshipListViewModel> = this.scholarshipService.getScholarships().pipe(
     map((scholarships): ScholarshipListViewModel => ({ loading: false, error: false, scholarships })),
     startWith(LOADING_VM),
@@ -58,5 +62,24 @@ export class ScholarshipListComponent {
       );
       return of<ScholarshipListViewModel>({ loading: false, error: true, scholarships: [] });
     }),
+    tap((vm) => (this.latestScholarships = vm.scholarships)),
   );
+
+  downloadPdf(): void {
+    const pdfColumns: PdfColumn[] = [
+      { header: 'Student Name', key: 'studentName' },
+      { header: 'Email', key: 'email' },
+      { header: 'Parent and Occupation', key: 'parentAndOccupation' },
+    ];
+    if (this.authService.isLoggedIn) {
+      pdfColumns.push({ header: 'Address', key: 'address' }, { header: 'Phone Number', key: 'phoneNumber' });
+    }
+
+    exportTableToPdf({
+      subtitle: 'Scholarship List',
+      columns: pdfColumns,
+      rows: this.latestScholarships,
+      fileName: 'scholarship-list',
+    });
+  }
 }

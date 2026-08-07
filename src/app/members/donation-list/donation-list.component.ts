@@ -1,11 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Observable, catchError, map, of, startWith, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
+import { exportTableToPdf } from '../../core/pdf-export.util';
+import { formatDisplayDate } from '../../core/date.util';
 import { DonationRecord, DonationService } from '../donation.service';
+
+const INR_FORMATTER = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0,
+});
 
 interface DonationRow extends DonationRecord {
   statusLabel: 'Paid' | 'Pending';
@@ -71,5 +79,31 @@ export class DonationListComponent {
 
       return { loading: false, error: false, donations: rows };
     }),
+    tap((vm) => (this.latestDonations = vm.donations)),
   );
+
+  /** Last successfully-loaded roster — kept for the PDF export, which runs outside the template. */
+  private latestDonations: DonationRow[] = [];
+
+  downloadPdf(): void {
+    const rows = this.latestDonations.map((donation) => ({
+      ...donation,
+      amount: INR_FORMATTER.format(donation.amount),
+      date: donation.date ? formatDisplayDate(donation.date) : '',
+    }));
+
+    exportTableToPdf({
+      subtitle: 'Donation List',
+      columns: [
+        { header: 'Donor', key: 'name' },
+        { header: 'Address', key: 'address' },
+        { header: 'Amount', key: 'amount' },
+        { header: 'Donating For', key: 'donationFor' },
+        { header: 'Date', key: 'date' },
+        { header: 'Status', key: 'statusLabel' },
+      ],
+      rows,
+      fileName: 'donation-list',
+    });
+  }
 }

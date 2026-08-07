@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, of, startWith } from 'rxjs';
+import { Observable, catchError, map, of, startWith, tap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { DataTableColumn, DataTableComponent } from '../../shared/data-table/data-table.component';
 import { ToastService } from '../../core/toast.service';
 import { extractApiErrorMessage } from '../../core/api-error.util';
+import { PdfColumn, exportTableToPdf } from '../../core/pdf-export.util';
 import { MemberRegisteredRecord, MemberRegisteredService } from '../member-registered.service';
 
 interface MemberRegisteredViewModel {
@@ -61,9 +62,31 @@ export class MemberRegisteredListComponent {
 
       return { loading: false, error: false, members };
     }),
+    tap((vm) => (this.latestMembers = vm.members)),
   );
+
+  /** Last successfully-loaded roster — kept for the PDF export, which runs outside the template. */
+  private latestMembers: MemberRegisteredRecord[] = [];
 
   goToAddMember(): void {
     this.router.navigateByUrl('/updates/members-registered/add');
+  }
+
+  downloadPdf(): void {
+    const pdfColumns: PdfColumn[] = [
+      { header: 'Name', key: 'name' },
+      { header: 'Email', key: 'emailId' },
+      { header: 'Member ID', key: 'memberId' },
+      { header: 'Address', key: 'address' },
+      { header: 'Phone', key: 'phone' },
+      { header: 'Referred By', key: 'referredBy' },
+    ];
+
+    exportTableToPdf({
+      subtitle: 'Members Registered',
+      columns: pdfColumns,
+      rows: this.latestMembers,
+      fileName: 'members-registered',
+    });
   }
 }
