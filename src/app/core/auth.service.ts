@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
+import { API_BASE_URL } from './api-base';
 
 export interface AppUser {
   username: string;
@@ -9,12 +10,17 @@ export interface AppUser {
   userType?: string;
 }
 
-export interface WhitelistEntry {
-  id: string;
+interface MembershipMatch {
   name: string;
   userName: string;
-  emailId: string;
   userType: string;
+}
+
+interface VerifyResponse {
+  member: boolean;
+  name?: string;
+  userName?: string;
+  userType?: string;
 }
 
 declare global {
@@ -26,7 +32,7 @@ declare global {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly storageKey = 'google_signin_user';
-  private readonly whitelistUrl = 'assets/userInfo/userInfo.json';
+  private readonly verifyUrl = `${API_BASE_URL}/auth/verify`;
 
   private readonly userSubject = new BehaviorSubject<AppUser | null>(this.readUser());
   private readonly isLoggedInSubject = new BehaviorSubject<boolean>(
@@ -76,14 +82,21 @@ export class AuthService {
     return this.canViewScholarApplied || this.canViewFinance;
   }
 
-  /** Looks up the given email in the members whitelist JSON; undefined when no match. */
-  verifyMembership(emailId: string): Observable<WhitelistEntry | undefined> {
-    return this.http.get<WhitelistEntry[]>(this.whitelistUrl).pipe(
-      map((entries) =>
-        entries.find((entry) => entry.emailId.toLowerCase() === emailId.trim().toLowerCase()),
-      ),
-      catchError(() => of(undefined)),
-    );
+  /**
+   * Looks up the given email against the members whitelist server-side — the whitelist itself
+   * (everyone's name/email/role) never reaches the browser, only this one match, if any.
+   */
+  verifyMembership(emailId: string): Observable<MembershipMatch | undefined> {
+    return this.http
+      .get<VerifyResponse>(this.verifyUrl, { params: { email: emailId.trim().toLowerCase() } })
+      .pipe(
+        map((response) =>
+          response.member
+            ? { name: response.name ?? '', userName: response.userName ?? '', userType: response.userType ?? '' }
+            : undefined,
+        ),
+        catchError(() => of(undefined)),
+      );
   }
 
   setUser(user: AppUser): void {
