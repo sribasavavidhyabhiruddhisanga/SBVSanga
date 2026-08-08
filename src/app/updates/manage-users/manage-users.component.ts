@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
@@ -28,7 +28,7 @@ const ROLE_OPTIONS = ['Admin', 'Finance', 'Scholarship', 'Member'];
   imports: [AsyncPipe, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './manage-users.component.html',
 })
-export class ManageUsersComponent implements OnInit {
+export class ManageUsersComponent implements AfterViewInit {
   private readonly fb = inject(FormBuilder);
   private readonly manageUsersService = inject(ManageUsersService);
   private readonly toastService = inject(ToastService);
@@ -79,12 +79,14 @@ export class ManageUsersComponent implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.renderGoogleButton();
   }
 
   private renderGoogleButton(): void {
-    if (!window.google?.accounts?.id) {
+    const target = document.getElementById('manageUsersGoogleBtn');
+
+    if (!window.google?.accounts?.id || !target) {
       setTimeout(() => this.renderGoogleButton(), 300);
       return;
     }
@@ -94,7 +96,7 @@ export class ManageUsersComponent implements OnInit {
       callback: (response: any) => this.handleVerified(response?.credential),
     });
 
-    window.google.accounts.id.renderButton(document.getElementById('manageUsersGoogleBtn'), {
+    window.google.accounts.id.renderButton(target, {
       theme: 'filled_blue',
       size: 'large',
       shape: 'pill',
