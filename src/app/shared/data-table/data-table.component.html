@@ -58,12 +58,46 @@
                         }
                       }
                       @case ('badge') {
-                        <span
-                          class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-                          [ngClass]="column.badgeClassMap?.[row[column.key]] || 'bg-stone-100 text-stone-500'"
-                        >
-                          {{ row[column.key] }}
-                        </span>
+                        @if (canToggleBadges && column.toggleable) {
+                          <button
+                            type="button"
+                            (click)="onBadgeToggle(row, column)"
+                            [disabled]="pendingToggleRowKey === row[rowIdKey]"
+                            [ngClass]="column.badgeClassMap?.[row[column.key]] || 'bg-stone-100 text-stone-500'"
+                            class="group inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition hover:brightness-95 disabled:cursor-wait disabled:opacity-70"
+                            [attr.title]="'Click to mark as ' + otherToggleValue(column, row[column.key])"
+                            [attr.aria-label]="'Status: ' + row[column.key] + '. Click to change.'"
+                          >
+                            @if (pendingToggleRowKey === row[rowIdKey]) {
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 animate-spin">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" class="opacity-25" />
+                                <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                              </svg>
+                            }
+                            {{ row[column.key] }}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              class="h-3 w-3 opacity-0 transition group-hover:opacity-60"
+                            >
+                              <path
+                                d="M7 10l5-5 5 5M7 14l5 5 5-5"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        } @else {
+                          <span
+                            class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                            [ngClass]="column.badgeClassMap?.[row[column.key]] || 'bg-stone-100 text-stone-500'"
+                          >
+                            {{ row[column.key] }}
+                          </span>
+                        }
                       }
                       @case ('currency') {
                         <span class="font-semibold text-stone-900">

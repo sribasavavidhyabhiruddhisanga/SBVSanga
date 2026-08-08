@@ -34,6 +34,10 @@
         [searchKeys]="['name', 'memberId']"
         searchPlaceholder="Search by name or member ID"
         emptyMessage="No members match your search."
+        [canToggleBadges]="authService.canViewFinance"
+        rowIdKey="memberId"
+        [pendingToggleRowKey]="updatingMemberId"
+        (badgeToggled)="onStatusToggle($event)"
       >
         <select
           tableFilters

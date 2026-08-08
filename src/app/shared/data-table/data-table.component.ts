@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
@@ -22,6 +22,16 @@ export interface DataTableColumn {
   type?: DataTableColumnType;
   /** Maps a cell's raw value to extra pill classes, only used when type === 'badge'. */
   badgeClassMap?: Record<string, string>;
+  /** When true (and the table's `canToggleBadges` is also true), the badge becomes clickable. */
+  toggleable?: boolean;
+  /** The two values a toggleable badge switches between, e.g. `['Active', 'Inactive']`. */
+  toggleValues?: [string, string];
+}
+
+export interface BadgeToggleEvent {
+  row: Record<string, any>;
+  column: DataTableColumn;
+  nextValue: string;
 }
 
 export type PageWindowItem = number | 'ellipsis';
@@ -86,6 +96,28 @@ export class DataTableComponent {
   @Input() searchPlaceholder = 'Search by name or email';
   @Input() emptyMessage = 'No records match your search.';
   @Input() pageSize = MAX_PAGE_SIZE;
+
+  /** Gates every `toggleable` badge column at once — the caller decides who's allowed to edit. */
+  @Input() canToggleBadges = false;
+  /** Row field used to identify which row is mid-save, e.g. `'memberId'`. */
+  @Input() rowIdKey = 'id';
+  /** The `rowIdKey` value of the row currently being saved — shows a spinner on just that badge. */
+  @Input() pendingToggleRowKey: unknown = null;
+  @Output() badgeToggled = new EventEmitter<BadgeToggleEvent>();
+
+  /** The value a toggleable badge would switch to if clicked right now. */
+  otherToggleValue(column: DataTableColumn, current: string): string | undefined {
+    const [a, b] = column.toggleValues ?? [];
+    return current === a ? b : a;
+  }
+
+  onBadgeToggle(row: Record<string, any>, column: DataTableColumn): void {
+    const nextValue = this.otherToggleValue(column, row[column.key]);
+    if (!nextValue) {
+      return;
+    }
+    this.badgeToggled.emit({ row, column, nextValue });
+  }
 
   @Input()
   set data(value: Record<string, any>[]) {
