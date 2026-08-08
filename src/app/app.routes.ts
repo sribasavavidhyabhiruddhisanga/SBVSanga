@@ -15,6 +15,7 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { MemberRegisteredListComponent } from './members-registered/member-registered-list/member-registered-list.component';
 import { MemberRegisteredFormComponent } from './members-registered/member-registered-form/member-registered-form.component';
 import { GalleryManageComponent } from './gallery/gallery-manage/gallery-manage.component';
+import { ManageUsersComponent } from './updates/manage-users/manage-users.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -62,6 +63,11 @@ export const routes: Routes = [
       {
         path: 'updates/gallery-manage',
         component: GalleryManageComponent,
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'updates/manage-users',
+        component: ManageUsersComponent,
         canActivate: [adminGuard],
       },
 

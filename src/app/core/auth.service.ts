@@ -23,12 +23,6 @@ interface VerifyResponse {
   userType?: string;
 }
 
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly storageKey = 'google_signin_user';

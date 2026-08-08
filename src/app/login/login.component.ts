@@ -2,12 +2,7 @@ import { AfterViewInit, Component, NgZone } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 import { ToastService } from '../core/toast.service';
-
-declare global {
-  interface Window {
-    google: any;
-  }
-}
+import { GOOGLE_CLIENT_ID, decodeGoogleIdToken } from '../core/google-identity';
 
 @Component({
   selector: 'app-login',
@@ -16,9 +11,6 @@ declare global {
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements AfterViewInit {
-  private readonly clientId =
-    '1985573387-kvmrn1nm19t9hrm0iqelnc4bn67lblo1.apps.googleusercontent.com';
-
   constructor(
     private authService: AuthService,
     private toastService: ToastService,
@@ -37,7 +29,7 @@ export class LoginComponent implements AfterViewInit {
     }
 
     window.google.accounts.id.initialize({
-      client_id: this.clientId,
+      client_id: GOOGLE_CLIENT_ID,
       callback: (response: any) => this.handleCredential(response),
     });
 
@@ -54,7 +46,7 @@ export class LoginComponent implements AfterViewInit {
   }
 
   private handleCredential(response: any): void {
-    const payload = this.parseJwt(response?.credential);
+    const payload = decodeGoogleIdToken(response?.credential);
     const emailId: string = payload?.email || '';
 
     this.authService.verifyMembership(emailId).subscribe((match) => {
@@ -76,24 +68,5 @@ export class LoginComponent implements AfterViewInit {
         this.router.navigateByUrl('/dashboard');
       });
     });
-  }
-
-  private parseJwt(token: string): any {
-    if (!token) {
-      return {};
-    }
-
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
-
-    const jsonPayload = decodeURIComponent(
-      atob(padded)
-        .split('')
-        .map((char) => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`)
-        .join(''),
-    );
-
-    return JSON.parse(jsonPayload);
   }
 }
