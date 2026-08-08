@@ -15,6 +15,17 @@ const INR_FORMATTER = new Intl.NumberFormat('en-IN', {
   maximumFractionDigits: 0,
 });
 
+/**
+ * jsPDF's built-in fonts can't render the "₹" glyph — it comes out as a broken box in the
+ * exported PDF. Using the ISO code instead of the symbol keeps the PDF's amount column ASCII-only.
+ */
+const PDF_INR_FORMATTER = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  currencyDisplay: 'code',
+  maximumFractionDigits: 0,
+});
+
 interface DonationRow extends DonationRecord {
   statusLabel: 'Paid' | 'Pending';
 }
@@ -88,7 +99,7 @@ export class DonationListComponent {
   downloadPdf(): void {
     const rows = this.latestDonations.map((donation) => ({
       ...donation,
-      amount: INR_FORMATTER.format(donation.amount),
+      amount: PDF_INR_FORMATTER.format(donation.amount),
       date: donation.date ? formatDisplayDate(donation.date) : '',
     }));
 
