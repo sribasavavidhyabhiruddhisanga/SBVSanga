@@ -18,7 +18,7 @@
     "name": "Suhas Kumar",
     "userName": "Suhas Java",
     "emailId": "suhasjavaui@gmail.com",
-    "userType": "Member"
+    "userType": "Scholarship"
   },
   {
     "id": "basava04",
@@ -26,5 +26,12 @@
     "userName": "Revathi",
     "emailId": "kvrevathi2002@gmail.com",
     "userType": "Member"
+  },
+  {
+    "id": "basava05",
+    "name": "Nandheesh",
+    "userName": "Nandhi",
+    "emailId": "sbvsangha@gmail.com",
+    "userType": "Scholarship"
   }
 ]

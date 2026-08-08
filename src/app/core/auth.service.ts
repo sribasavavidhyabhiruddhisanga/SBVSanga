@@ -29,7 +29,9 @@ export class AuthService {
   private readonly whitelistUrl = 'assets/userInfo/userInfo.json';
 
   private readonly userSubject = new BehaviorSubject<AppUser | null>(this.readUser());
-  private readonly isLoggedInSubject = new BehaviorSubject<boolean>(this.userSubject.value !== null);
+  private readonly isLoggedInSubject = new BehaviorSubject<boolean>(
+    this.userSubject.value !== null,
+  );
 
   readonly user$ = this.userSubject.asObservable();
 
@@ -49,6 +51,29 @@ export class AuthService {
   /** True for a signed-in member whose whitelist userType is Admin. */
   get isAdmin(): boolean {
     return (this.user?.userType ?? '').toLowerCase() === 'admin';
+  }
+
+  private get isFinance(): boolean {
+    return (this.user?.userType ?? '').toLowerCase() === 'finance';
+  }
+
+  private get isScholarship(): boolean {
+    return (this.user?.userType ?? '').toLowerCase() === 'scholarship';
+  }
+
+  /** Admin or Scholarship — allowed to view the Scholarship Applied page and menu item. */
+  get canViewScholarApplied(): boolean {
+    return this.isAdmin || this.isScholarship;
+  }
+
+  /** Admin or Finance — allowed to view Donation List and Members Registered. */
+  get canViewFinance(): boolean {
+    return this.isAdmin || this.isFinance;
+  }
+
+  /** Whether the Updates menu should appear at all — true for Admin, Finance, or Scholarship. */
+  get canViewUpdatesMenu(): boolean {
+    return this.canViewScholarApplied || this.canViewFinance;
   }
 
   /** Looks up the given email in the members whitelist JSON; undefined when no match. */

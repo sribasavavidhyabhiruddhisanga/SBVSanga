@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './core/auth.guard';
+import { adminGuard, financeGuard, scholarshipGuard, upcomingEventsGuard } from './core/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { ShellComponent } from './shell/shell.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -33,21 +33,37 @@ export const routes: Routes = [
       { path: 'community/donate', component: DonationComponent },
       { path: 'community/scholarship-apply', component: ScholarshipApplyComponent },
 
-      // "Updates" menu — Admin members only.
-      { path: 'updates/scholar-applied', component: ScholarAppliedComponent, canActivate: [adminGuard] },
-      { path: 'updates/donation-list', component: DonationListComponent, canActivate: [adminGuard] },
-      { path: 'updates/upcoming-events', component: UpcomingEventsComponent, canActivate: [adminGuard] },
+      // "Updates" menu — access varies by role; see auth.guard.ts.
+      {
+        path: 'updates/scholarship-applied',
+        component: ScholarAppliedComponent,
+        canActivate: [scholarshipGuard],
+      },
+      {
+        path: 'updates/donation-list',
+        component: DonationListComponent,
+        canActivate: [financeGuard],
+      },
+      {
+        path: 'updates/upcoming-events',
+        component: UpcomingEventsComponent,
+        canActivate: [upcomingEventsGuard],
+      },
       {
         path: 'updates/members-registered',
         component: MemberRegisteredListComponent,
-        canActivate: [adminGuard],
+        canActivate: [financeGuard],
       },
       {
         path: 'updates/members-registered/add',
         component: MemberRegisteredFormComponent,
+        canActivate: [financeGuard],
+      },
+      {
+        path: 'updates/gallery-manage',
+        component: GalleryManageComponent,
         canActivate: [adminGuard],
       },
-      { path: 'updates/gallery-manage', component: GalleryManageComponent, canActivate: [adminGuard] },
 
       { path: 'gallery', component: GalleryComponent },
     ],
