@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { API_BASE_URL } from '../core/api-base';
 
 /** Row shape sent to / received from the upcoming-events API. */
@@ -56,8 +56,14 @@ export class UpcomingEventsService {
     return `EVT${String(highest + 1).padStart(3, '0')}`;
   }
 
-  /** Asks the backend to drop the record matching `eventId`. */
-  deleteEvent(eventId: string): Observable<unknown> {
-    return this.http.delete(this.resourceUrl, { body: { eventId } });
+  /**
+   * The live `/data/*.json` endpoint only implements GET/POST/PUT — there's no server-side
+   * delete-by-id, so this drops the record locally and POSTs the full remaining list back,
+   * same as every other mutation here.
+   */
+  deleteEvent(eventId: string): Observable<UpcomingEventRecord[]> {
+    return this.getEvents().pipe(
+      switchMap((existing) => this.createEvent(existing.filter((event) => event.eventId !== eventId))),
+    );
   }
 }
